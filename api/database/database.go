@@ -2,6 +2,8 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
+	"github.com/marcos-travasso/library-system/api"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"os"
@@ -51,4 +53,12 @@ func (db *Database) fillDatabaseTables() {
 			return
 		}
 	}
+}
+
+func (db *Database) insertPersonStatment(p api.Person) string {
+	sqlStatment := ""
+	if p.Name != "" {
+		sqlStatment += fmt.Sprintf("INSERT INTO Pessoas(Nome, Genero, Nascimento) values (\"%s\", \"%s\", \"%s\")", p.Name, p.Gender, p.Birthday)
+	}
+	return sqlStatment
 }

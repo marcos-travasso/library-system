@@ -77,6 +77,10 @@ func (p Person) SQLStatement(statementType string) string {
 		if p.ID != 0 {
 			sqlStatement += fmt.Sprintf("DELETE FROM Pessoas WHERE idPessoa = \"%d\"", p.ID)
 		}
+	case "SELECT":
+		if p.ID != 0 {
+			sqlStatement += fmt.Sprintf("SELECT * FROM Pessoas WHERE idPessoa = \"%d\"", p.ID)
+		}
 	}
 	return sqlStatement
 }

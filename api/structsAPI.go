@@ -1,5 +1,7 @@
 package api
 
+import "fmt"
+
 type Book struct {
 	ID     int     `json:"id"`
 	Year   int     `json:"year"`
@@ -57,4 +59,12 @@ type Lending struct {
 
 type Devolution struct {
 	Date string `json:"date"`
+}
+
+func (p Person) insertPersonStatement() string {
+	sqlStatement := ""
+	if p.Name != "" {
+		sqlStatement += fmt.Sprintf("INSERT INTO Pessoas(Nome, Genero, Nascimento) values (\"%s\", \"%s\", \"%s\")", p.Name, p.Gender, p.Birthday)
+	}
+	return sqlStatement
 }

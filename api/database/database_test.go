@@ -18,7 +18,7 @@ func TestDatabase_CreateDatabase(t *testing.T) {
 	}
 }
 
-func TestDatabase_insertPersonStatment(t *testing.T) {
+func TestDatabase_insertPersonStatement(t *testing.T) {
 	tests := []struct {
 		name   string
 		fields Database
@@ -65,7 +65,7 @@ func TestDatabase_insertPersonStatment(t *testing.T) {
 			db := &Database{
 				Dir: tt.fields.Dir,
 			}
-			if got := db.insertPersonStatment(tt.args); got != tt.want {
+			if got := db.insertPersonStatement(tt.args); got != tt.want {
 				t.Errorf("insertPerson() = %v, want %v", got, tt.want)
 			}
 		})

@@ -55,7 +55,7 @@ func (db *Database) fillDatabaseTables() {
 	}
 }
 
-func (db *Database) insertPersonStatment(p api.Person) string {
+func (db *Database) insertPersonStatement(p api.Person) string {
 	sqlStatment := ""
 	if p.Name != "" {
 		sqlStatment += fmt.Sprintf("INSERT INTO Pessoas(Nome, Genero, Nascimento) values (\"%s\", \"%s\", \"%s\")", p.Name, p.Gender, p.Birthday)

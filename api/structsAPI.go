@@ -61,10 +61,18 @@ type Devolution struct {
 	Date string `json:"date"`
 }
 
-func (p Person) insertPersonStatement() string {
+func (p Person) SQLStatement(statementType string) string {
 	sqlStatement := ""
-	if p.Name != "" {
-		sqlStatement += fmt.Sprintf("INSERT INTO Pessoas(Nome, Genero, Nascimento) values (\"%s\", \"%s\", \"%s\")", p.Name, p.Gender, p.Birthday)
+
+	switch statementType {
+	case "INSERT":
+		if p.Name != "" {
+			sqlStatement += fmt.Sprintf("INSERT INTO Pessoas(Nome, Genero, Nascimento) values (\"%s\", \"%s\", \"%s\")", p.Name, p.Gender, p.Birthday)
+		}
+	case "UPDATE":
+		if p.ID != 0 {
+			sqlStatement += fmt.Sprintf("UPDATE Pessoas SET nome=\"%s\", genero=\"%s\", nascimento=\"%s\" WHERE idPessoa = \"%d\"", p.Name, p.Gender, p.Birthday, p.ID)
+		}
 	}
 	return sqlStatement
 }

@@ -33,7 +33,8 @@ func TestPerson_PersonStatement(t *testing.T) {
 				"INSERT": "",
 				"UPDATE": "UPDATE Pessoas SET nome=\"\", genero=\"\", nascimento=\"\" WHERE idPessoa = \"1\"",
 			},
-		}, {name: "Empty name",
+		},
+		{name: "Empty name",
 			args: Person{
 				ID:       1,
 				Name:     "",
@@ -44,7 +45,8 @@ func TestPerson_PersonStatement(t *testing.T) {
 				"INSERT": "",
 				"UPDATE": "UPDATE Pessoas SET nome=\"\", genero=\"F\", nascimento=\"01/01/2000\" WHERE idPessoa = \"1\"",
 			},
-		}, {name: "Empty birthday",
+		},
+		{name: "Empty birthday",
 			args: Person{
 				ID:       1,
 				Name:     "Marcos",
@@ -54,6 +56,30 @@ func TestPerson_PersonStatement(t *testing.T) {
 			wantedStatements: map[string]string{
 				"INSERT": "INSERT INTO Pessoas(Nome, Genero, Nascimento) values (\"Marcos\", \"M\", \"\")",
 				"UPDATE": "UPDATE Pessoas SET nome=\"Marcos\", genero=\"M\", nascimento=\"\" WHERE idPessoa = \"1\"",
+			},
+		},
+		{name: "Empty birthday",
+			args: Person{
+				ID:       1,
+				Name:     "Marcos",
+				Birthday: "",
+				Gender:   "M",
+			},
+			wantedStatements: map[string]string{
+				"INSERT": "INSERT INTO Pessoas(Nome, Genero, Nascimento) values (\"Marcos\", \"M\", \"\")",
+				"UPDATE": "UPDATE Pessoas SET nome=\"Marcos\", genero=\"M\", nascimento=\"\" WHERE idPessoa = \"1\"",
+			},
+		},
+		{name: "Empty ID",
+			args: Person{
+				ID:       0,
+				Name:     "Marcos",
+				Birthday: "01/01/2000",
+				Gender:   "M",
+			},
+			wantedStatements: map[string]string{
+				"INSERT": "INSERT INTO Pessoas(Nome, Genero, Nascimento) values (\"Marcos\", \"M\", \"01/01/2000\")",
+				"UPDATE": "",
 			},
 		},
 	}

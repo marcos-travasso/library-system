@@ -5,12 +5,14 @@ import (
 	"testing"
 )
 
-var dir = "./test_db.db"
+var db = Database{
+	"./test_db.db",
+}
 
 func TestDatabase_CreateDatabase(t *testing.T) {
-	CreateDatabase(dir)
+	db.CreateDatabase()
 
-	if _, err := os.Stat(dir); os.IsNotExist(err) {
+	if _, err := os.Stat(db.dir); os.IsNotExist(err) {
 		t.Errorf("Fail to create database file")
 	}
 }

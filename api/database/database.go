@@ -7,26 +7,30 @@ import (
 	"os"
 )
 
-func CreateDatabase(dir string) {
-	if _, err := os.Stat(dir); os.IsNotExist(err) {
-		_, err := os.Create(dir)
+type Database struct {
+	dir string
+}
+
+func (db *Database) CreateDatabase() {
+	if _, err := os.Stat(db.dir); os.IsNotExist(err) {
+		_, err := os.Create(db.dir)
 		if err != nil {
 			log.Printf("Failed to create: %q\n", err)
 			return
 		}
 	}
 
-	fillDatabaseTables(dir)
+	db.fillDatabaseTables()
 }
 
-func fillDatabaseTables(dir string) {
-	db, err := sql.Open("sqlite3", dir)
+func (db *Database) fillDatabaseTables() {
+	conn, err := sql.Open("sqlite3", db.dir)
 	defer func(conn *sql.DB) {
 		err := conn.Close()
 		if err != nil {
 			log.Printf("Failed to close: %q\n", err)
 		}
-	}(db)
+	}(conn)
 
 	sqlStatments := []string{
 		`CREATE TABLE Autores(idAutor INTEGER PRIMARY key, pessoa INTEGER, FOREIGN KEY(pessoa) REFERENCES pessoas(idPessoa))`,
@@ -41,7 +45,7 @@ func fillDatabaseTables(dir string) {
 	}
 
 	for _, sqlStmt := range sqlStatments {
-		_, err = db.Exec(sqlStmt)
+		_, err = conn.Exec(sqlStmt)
 		if err != nil {
 			log.Printf("%q: %s\n", err, sqlStmt)
 			return

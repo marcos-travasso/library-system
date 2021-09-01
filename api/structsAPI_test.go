@@ -20,6 +20,7 @@ func TestPerson_PersonStatement(t *testing.T) {
 			wantedStatements: map[string]string{
 				"INSERT": "INSERT INTO Pessoas(Nome, Genero, Nascimento) values (\"Marcos\", \"M\", \"01/01/2000\")",
 				"UPDATE": "UPDATE Pessoas SET nome=\"Marcos\", genero=\"M\", nascimento=\"01/01/2000\" WHERE idPessoa = \"1\"",
+				"DELETE": "DELETE FROM Pessoas WHERE idPessoa = \"1\"",
 			},
 		},
 		{name: "Empty person",
@@ -32,6 +33,7 @@ func TestPerson_PersonStatement(t *testing.T) {
 			wantedStatements: map[string]string{
 				"INSERT": "",
 				"UPDATE": "UPDATE Pessoas SET nome=\"\", genero=\"\", nascimento=\"\" WHERE idPessoa = \"1\"",
+				"DELETE": "DELETE FROM Pessoas WHERE idPessoa = \"1\"",
 			},
 		},
 		{name: "Empty name",
@@ -44,6 +46,7 @@ func TestPerson_PersonStatement(t *testing.T) {
 			wantedStatements: map[string]string{
 				"INSERT": "",
 				"UPDATE": "UPDATE Pessoas SET nome=\"\", genero=\"F\", nascimento=\"01/01/2000\" WHERE idPessoa = \"1\"",
+				"DELETE": "DELETE FROM Pessoas WHERE idPessoa = \"1\"",
 			},
 		},
 		{name: "Empty birthday",
@@ -56,6 +59,7 @@ func TestPerson_PersonStatement(t *testing.T) {
 			wantedStatements: map[string]string{
 				"INSERT": "INSERT INTO Pessoas(Nome, Genero, Nascimento) values (\"Marcos\", \"M\", \"\")",
 				"UPDATE": "UPDATE Pessoas SET nome=\"Marcos\", genero=\"M\", nascimento=\"\" WHERE idPessoa = \"1\"",
+				"DELETE": "DELETE FROM Pessoas WHERE idPessoa = \"1\"",
 			},
 		},
 		{name: "Empty birthday",
@@ -68,6 +72,7 @@ func TestPerson_PersonStatement(t *testing.T) {
 			wantedStatements: map[string]string{
 				"INSERT": "INSERT INTO Pessoas(Nome, Genero, Nascimento) values (\"Marcos\", \"M\", \"\")",
 				"UPDATE": "UPDATE Pessoas SET nome=\"Marcos\", genero=\"M\", nascimento=\"\" WHERE idPessoa = \"1\"",
+				"DELETE": "DELETE FROM Pessoas WHERE idPessoa = \"1\"",
 			},
 		},
 		{name: "Empty ID",
@@ -80,6 +85,7 @@ func TestPerson_PersonStatement(t *testing.T) {
 			wantedStatements: map[string]string{
 				"INSERT": "INSERT INTO Pessoas(Nome, Genero, Nascimento) values (\"Marcos\", \"M\", \"01/01/2000\")",
 				"UPDATE": "",
+				"DELETE": "",
 			},
 		},
 	}

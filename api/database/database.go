@@ -8,12 +8,12 @@ import (
 )
 
 type Database struct {
-	dir string
+	Dir string
 }
 
 func (db *Database) CreateDatabase() {
-	if _, err := os.Stat(db.dir); os.IsNotExist(err) {
-		_, err := os.Create(db.dir)
+	if _, err := os.Stat(db.Dir); os.IsNotExist(err) {
+		_, err := os.Create(db.Dir)
 		if err != nil {
 			log.Printf("Failed to create: %q\n", err)
 			return
@@ -24,7 +24,7 @@ func (db *Database) CreateDatabase() {
 }
 
 func (db *Database) fillDatabaseTables() {
-	conn, err := sql.Open("sqlite3", db.dir)
+	conn, err := sql.Open("sqlite3", db.Dir)
 	defer func(conn *sql.DB) {
 		err := conn.Close()
 		if err != nil {

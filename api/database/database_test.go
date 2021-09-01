@@ -12,7 +12,7 @@ var db = Database{
 func TestDatabase_CreateDatabase(t *testing.T) {
 	db.CreateDatabase()
 
-	if _, err := os.Stat(db.dir); os.IsNotExist(err) {
+	if _, err := os.Stat(db.Dir); os.IsNotExist(err) {
 		t.Errorf("Fail to create database file")
 	}
 }

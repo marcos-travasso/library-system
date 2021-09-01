@@ -20,13 +20,11 @@ func TestDatabase_CreateDatabase(t *testing.T) {
 
 func TestDatabase_insertPersonStatement(t *testing.T) {
 	tests := []struct {
-		name   string
-		fields Database
-		args   api.Person
-		want   string
+		name string
+		args api.Person
+		want string
 	}{
 		{name: "One person",
-			fields: db,
 			args: api.Person{
 				Name:     "Marcos",
 				Birthday: "01/01/2000",
@@ -35,7 +33,6 @@ func TestDatabase_insertPersonStatement(t *testing.T) {
 			want: "INSERT INTO Pessoas(Nome, Genero, Nascimento) values (\"Marcos\", \"M\", \"01/01/2000\")",
 		},
 		{name: "Empty person",
-			fields: db,
 			args: api.Person{
 				Name:     "",
 				Birthday: "",
@@ -43,7 +40,6 @@ func TestDatabase_insertPersonStatement(t *testing.T) {
 			},
 			want: "",
 		}, {name: "Empty name",
-			fields: db,
 			args: api.Person{
 				Name:     "",
 				Birthday: "01/01/2000",
@@ -51,7 +47,6 @@ func TestDatabase_insertPersonStatement(t *testing.T) {
 			},
 			want: "",
 		}, {name: "Empty birthday",
-			fields: db,
 			args: api.Person{
 				Name:     "Marcos",
 				Birthday: "",
@@ -62,10 +57,7 @@ func TestDatabase_insertPersonStatement(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			db := &Database{
-				Dir: tt.fields.Dir,
-			}
-			if got := db.insertPersonStatement(tt.args); got != tt.want {
+			if got := insertPersonStatement(tt.args); got != tt.want {
 				t.Errorf("insertPerson() = %v, want %v", got, tt.want)
 			}
 		})

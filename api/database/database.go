@@ -16,10 +16,10 @@ func CreateDatabase(dir string) {
 		}
 	}
 
-	fillDatabase(dir)
+	fillDatabaseTables(dir)
 }
 
-func fillDatabase(dir string) {
+func fillDatabaseTables(dir string) {
 	db, err := sql.Open("sqlite3", dir)
 	defer func(conn *sql.DB) {
 		err := conn.Close()

@@ -25,6 +25,9 @@ func (p Person) SQLStatement(statementType string) (string, error) {
 		if p.ID == 0 {
 			return "", errors.New("person has no ID")
 		}
+		if p.Name == "" {
+			return "", errors.New("person has no name")
+		}
 		sqlStatement += fmt.Sprintf("UPDATE Pessoas SET nome=\"%s\", genero=\"%s\", nascimento=\"%s\" WHERE idPessoa = \"%d\"", p.Name, p.Gender, p.Birthday, p.ID)
 	case "DELETE":
 		if p.ID == 0 {

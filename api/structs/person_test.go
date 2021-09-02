@@ -31,7 +31,7 @@ func TestPerson_PersonStatement(t *testing.T) {
 			},
 			wantedStatements: map[string]string{
 				"INSERT": "",
-				"UPDATE": "UPDATE Pessoas SET nome=\"\", genero=\"\", nascimento=\"\" WHERE idPessoa = \"2\"",
+				"UPDATE": "",
 				"DELETE": "DELETE FROM Pessoas WHERE idPessoa = \"2\"",
 				"SELECT": "SELECT * FROM Pessoas WHERE idPessoa = \"2\"",
 			},
@@ -45,7 +45,7 @@ func TestPerson_PersonStatement(t *testing.T) {
 			},
 			wantedStatements: map[string]string{
 				"INSERT": "",
-				"UPDATE": "UPDATE Pessoas SET nome=\"\", genero=\"F\", nascimento=\"01/01/2000\" WHERE idPessoa = \"3\"",
+				"UPDATE": "",
 				"DELETE": "DELETE FROM Pessoas WHERE idPessoa = \"3\"",
 				"SELECT": "SELECT * FROM Pessoas WHERE idPessoa = \"3\"",
 			},

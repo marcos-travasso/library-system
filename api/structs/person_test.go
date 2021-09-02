@@ -82,6 +82,21 @@ func TestPerson_PersonStatement(t *testing.T) {
 				"TEST":   "",
 			},
 		},
+		{name: "Empty fields",
+			args: Person{
+				ID:       0,
+				Name:     "",
+				Birthday: "",
+				Gender:   "",
+			},
+			wantedStatements: map[string]string{
+				"INSERT": "",
+				"UPDATE": "",
+				"DELETE": "",
+				"SELECT": "",
+				"TEST":   "",
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

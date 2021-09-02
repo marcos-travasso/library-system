@@ -47,6 +47,19 @@ func TestBook_GenreStatement(t *testing.T) {
 				"TEST":   "",
 			},
 		},
+		{name: "Empty fields",
+			args: Genre{
+				ID:   0,
+				Name: "",
+			},
+			wantedStatements: map[string]string{
+				"INSERT": "",
+				"UPDATE": "",
+				"DELETE": "",
+				"SELECT": "",
+				"TEST":   "",
+			},
+		},
 	}
 
 	for _, tt := range tests {

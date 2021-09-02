@@ -47,6 +47,19 @@ func TestAuthor_AuthorStatement(t *testing.T) {
 				"TEST":   "",
 			},
 		},
+		{name: "Empty fields",
+			args: Author{
+				ID:     0,
+				Person: Person{ID: 0},
+			},
+			wantedStatements: map[string]string{
+				"INSERT": "",
+				"UPDATE": "",
+				"DELETE": "",
+				"SELECT": "",
+				"TEST":   "",
+			},
+		},
 	}
 
 	for _, tt := range tests {

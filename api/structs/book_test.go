@@ -60,6 +60,15 @@ func TestBook_GenreStatement(t *testing.T) {
 				"TEST":   "",
 			},
 		},
+		{name: "Empty struct",
+			wantedStatements: map[string]string{
+				"INSERT": "",
+				"UPDATE": "",
+				"DELETE": "",
+				"SELECT": "",
+				"TEST":   "",
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -143,6 +152,15 @@ func TestBook_BookStatement(t *testing.T) {
 				},
 				Pages: 0,
 			},
+			wantedStatements: map[string]string{
+				"INSERT": "",
+				"UPDATE": "",
+				"DELETE": "",
+				"SELECT": "",
+				"TEST":   "",
+			},
+		},
+		{name: "Empty struct",
 			wantedStatements: map[string]string{
 				"INSERT": "",
 				"UPDATE": "",

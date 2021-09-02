@@ -60,6 +60,15 @@ func TestAuthor_AuthorStatement(t *testing.T) {
 				"TEST":   "",
 			},
 		},
+		{name: "Empty struct",
+			wantedStatements: map[string]string{
+				"INSERT": "",
+				"UPDATE": "",
+				"DELETE": "",
+				"SELECT": "",
+				"TEST":   "",
+			},
+		},
 	}
 
 	for _, tt := range tests {

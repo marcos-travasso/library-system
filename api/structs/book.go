@@ -6,12 +6,12 @@ import (
 )
 
 type Book struct {
-	ID     int     `json:"id"`
-	Year   int     `json:"year"`
-	Pages  int     `json:"pages"`
-	Title  string  `json:"title"`
-	Author Author  `json:"author"`
-	Genre  []Genre `json:"genre"`
+	ID     int    `json:"id"`
+	Year   int    `json:"year"`
+	Pages  int    `json:"pages"`
+	Title  string `json:"title"`
+	Author Author `json:"author"`
+	Genre  Genre  `json:"genre"`
 }
 
 type Genre struct {
@@ -79,6 +79,34 @@ func (b Book) SQLStatement(statementType string) (string, error) {
 			return "", errors.New("book has no ID")
 		}
 		sqlStatement += fmt.Sprintf("SELECT * FROM Livros WHERE idLivro = \"%d\"", b.ID)
+	default:
+		return "", errors.New("invalid statement type")
+	}
+	return sqlStatement, nil
+}
+
+func (b Book) LinkGenreSQLStatement(statementType string) (string, error) {
+	if b.ID == 0 {
+		return "", errors.New("book has no id")
+	}
+
+	sqlStatement := ""
+
+	switch statementType {
+	case "INSERT":
+		if b.Genre.ID == 0 {
+			return "", errors.New("genre has no id")
+		}
+		sqlStatement += fmt.Sprintf("INSERT INTO generos_dos_livros(livro, genero) values (\"%d\", \"%d\")", b.ID, b.Genre.ID)
+	case "UPDATE":
+		if b.Genre.ID == 0 {
+			return "", errors.New("genre has no id")
+		}
+		sqlStatement += fmt.Sprintf("UPDATE generos_dos_livros SET genero=\"%d\" WHERE idLivro = \"%d\"", b.Genre.ID, b.ID)
+	case "DELETE":
+		sqlStatement += fmt.Sprintf("DELETE FROM generos_dos_livros WHERE idLivro = \"%d\"", b.ID)
+	case "SELECT":
+		sqlStatement += fmt.Sprintf("SELECT * FROM generos_dos_livros WHERE idLivro = \"%d\"", b.ID)
 	default:
 		return "", errors.New("invalid statement type")
 	}

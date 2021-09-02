@@ -163,3 +163,103 @@ func TestBook_BookStatement(t *testing.T) {
 		})
 	}
 }
+
+func TestBook_LinkGenreSQLStatement(t *testing.T) {
+	tests := []struct {
+		name             string
+		args             Book
+		wantedStatements map[string]string
+	}{
+		{name: "One book with genre",
+			args: Book{
+				ID: 1,
+				Genre: Genre{
+					ID: 2,
+				},
+			},
+			wantedStatements: map[string]string{
+				"INSERT": "INSERT INTO generos_dos_livros(livro, genero) values (\"1\", \"2\")",
+				"UPDATE": "UPDATE generos_dos_livros SET genero=\"2\" WHERE idLivro = \"1\"",
+				"DELETE": "DELETE FROM generos_dos_livros WHERE idLivro = \"1\"",
+				"SELECT": "SELECT * FROM generos_dos_livros WHERE idLivro = \"1\"",
+				"TEST":   "",
+			},
+		},
+		{name: "Empty genre",
+			args: Book{
+				ID: 2,
+			},
+			wantedStatements: map[string]string{
+				"INSERT": "",
+				"UPDATE": "",
+				"DELETE": "DELETE FROM generos_dos_livros WHERE idLivro = \"2\"",
+				"SELECT": "SELECT * FROM generos_dos_livros WHERE idLivro = \"2\"",
+				"TEST":   "",
+			},
+		},
+		{name: "Empty genre ID",
+			args: Book{
+				ID: 3,
+				Genre: Genre{
+					ID: 0,
+				},
+			},
+			wantedStatements: map[string]string{
+				"INSERT": "",
+				"UPDATE": "",
+				"DELETE": "DELETE FROM generos_dos_livros WHERE idLivro = \"3\"",
+				"SELECT": "SELECT * FROM generos_dos_livros WHERE idLivro = \"3\"",
+				"TEST":   "",
+			},
+		},
+		{name: "Empty book ID",
+			args: Book{
+				ID: 0,
+				Genre: Genre{
+					ID: 1,
+				},
+			},
+			wantedStatements: map[string]string{
+				"INSERT": "",
+				"UPDATE": "",
+				"DELETE": "",
+				"SELECT": "",
+				"TEST":   "",
+			},
+		},
+		{name: "Empty fields",
+			args: Book{
+				ID: 0,
+				Genre: Genre{
+					ID: 0,
+				},
+			},
+			wantedStatements: map[string]string{
+				"INSERT": "",
+				"UPDATE": "",
+				"DELETE": "",
+				"SELECT": "",
+				"TEST":   "",
+			},
+		},
+		{name: "Empty struct",
+			wantedStatements: map[string]string{
+				"INSERT": "",
+				"UPDATE": "",
+				"DELETE": "",
+				"SELECT": "",
+				"TEST":   "",
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			for statementType, wanted := range tt.wantedStatements {
+				if got, _ := tt.args.LinkGenreSQLStatement(statementType); got != wanted {
+					t.Errorf("%s statement got = %v, expect = %v", statementType, got, wanted)
+				}
+			}
+		})
+	}
+}

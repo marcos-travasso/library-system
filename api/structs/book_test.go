@@ -281,3 +281,55 @@ func TestBook_LinkGenreSQLStatement(t *testing.T) {
 		})
 	}
 }
+
+func TestBook_LinkSQLStatement(t *testing.T) {
+	tests := []struct {
+		name             string
+		args             Genre
+		wantedStatements map[string]string
+	}{
+		{name: "One genre",
+			args: Genre{
+				ID: 1,
+			},
+			wantedStatements: map[string]string{
+				"INSERT": "",
+				"UPDATE": "",
+				"DELETE": "DELETE FROM generos_dos_livros WHERE genero = \"1\"",
+				"SELECT": "SELECT * FROM generos_dos_livros WHERE genero = \"1\"",
+				"TEST":   "",
+			},
+		},
+		{name: "Empty genre ID",
+			args: Genre{
+				ID: 0,
+			},
+			wantedStatements: map[string]string{
+				"INSERT": "",
+				"UPDATE": "",
+				"DELETE": "",
+				"SELECT": "",
+				"TEST":   "",
+			},
+		},
+		{name: "Empty struct",
+			wantedStatements: map[string]string{
+				"INSERT": "",
+				"UPDATE": "",
+				"DELETE": "",
+				"SELECT": "",
+				"TEST":   "",
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			for statementType, wanted := range tt.wantedStatements {
+				if got, _ := tt.args.LinkSQLStatement(statementType); got != wanted {
+					t.Errorf("%s statement got = %v, expect = %v", statementType, got, wanted)
+				}
+			}
+		})
+	}
+}

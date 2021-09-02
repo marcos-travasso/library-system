@@ -112,3 +112,21 @@ func (b Book) LinkGenreSQLStatement(statementType string) (string, error) {
 	}
 	return sqlStatement, nil
 }
+
+func (g Genre) LinkSQLStatement(statementType string) (string, error) {
+	if g.ID == 0 {
+		return "", errors.New("genre has no id")
+	}
+
+	sqlStatement := ""
+
+	switch statementType {
+	case "DELETE":
+		sqlStatement += fmt.Sprintf("DELETE FROM generos_dos_livros WHERE genero = \"%d\"", g.ID)
+	case "SELECT":
+		sqlStatement += fmt.Sprintf("SELECT * FROM generos_dos_livros WHERE genero = \"%d\"", g.ID)
+	default:
+		return "", errors.New("invalid statement type")
+	}
+	return sqlStatement, nil
+}

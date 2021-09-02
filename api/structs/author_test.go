@@ -15,8 +15,10 @@ func TestAuthor_AuthorStatement(t *testing.T) {
 			},
 			wantedStatements: map[string]string{
 				"INSERT": "INSERT INTO Autores(pessoa) values (\"1\")",
+				"UPDATE": "",
 				"DELETE": "DELETE FROM Autores WHERE idAutor = \"1\"",
 				"SELECT": "SELECT * FROM Autores WHERE idAutor = \"1\"",
+				"TEST":   "",
 			},
 		},
 		{name: "Empty author ID",
@@ -26,8 +28,10 @@ func TestAuthor_AuthorStatement(t *testing.T) {
 			},
 			wantedStatements: map[string]string{
 				"INSERT": "INSERT INTO Autores(pessoa) values (\"1\")",
+				"UPDATE": "",
 				"DELETE": "",
 				"SELECT": "",
+				"TEST":   "",
 			},
 		},
 		{name: "Empty person ID",
@@ -37,8 +41,10 @@ func TestAuthor_AuthorStatement(t *testing.T) {
 			},
 			wantedStatements: map[string]string{
 				"INSERT": "",
+				"UPDATE": "",
 				"DELETE": "DELETE FROM Autores WHERE idAutor = \"1\"",
 				"SELECT": "SELECT * FROM Autores WHERE idAutor = \"1\"",
+				"TEST":   "",
 			},
 		},
 	}

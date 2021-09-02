@@ -29,6 +29,8 @@ func (a Author) SQLStatement(statementType string) (string, error) {
 			return "", errors.New("author has no ID")
 		}
 		sqlStatement += fmt.Sprintf("SELECT * FROM Autores WHERE idAutor = \"%d\"", a.ID)
+	default:
+		return "", errors.New("invalid statement type")
 	}
 	return sqlStatement, nil
 }

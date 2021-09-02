@@ -39,6 +39,8 @@ func (p Person) SQLStatement(statementType string) (string, error) {
 			return "", errors.New("person has no ID")
 		}
 		sqlStatement += fmt.Sprintf("SELECT * FROM Pessoas WHERE idPessoa = \"%d\"", p.ID)
+	default:
+		return "", errors.New("invalid statement type")
 	}
 	return sqlStatement, nil
 }

@@ -84,7 +84,7 @@ func TestPerson_PersonStatement(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			for statementType, wanted := range tt.wantedStatements {
-				if got := tt.args.SQLStatement(statementType); got != wanted {
+				if got, _ := tt.args.SQLStatement(statementType); got != wanted {
 					t.Errorf("insertPerson() = %v, want %v", got, wanted)
 				}
 			}

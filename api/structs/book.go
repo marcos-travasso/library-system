@@ -51,3 +51,36 @@ func (g Genre) SQLStatement(statementType string) (string, error) {
 	}
 	return sqlStatement, nil
 }
+
+func (b Book) SQLStatement(statementType string) (string, error) {
+	sqlStatement := ""
+
+	switch statementType {
+	case "INSERT":
+		if b.Title == "" {
+			return "", errors.New("book has no title")
+		}
+		sqlStatement += fmt.Sprintf("INSERT INTO Livros(titulo, ano, autor, paginas) values (\"%s\", \"%d\", \"%d\", \"%d\")", b.Title, b.Year, b.Author.ID, b.Pages)
+	case "UPDATE":
+		if b.ID == 0 {
+			return "", errors.New("book has no id")
+		}
+		if b.Title == "" {
+			return "", errors.New("book has no title")
+		}
+		sqlStatement += fmt.Sprintf("UPDATE Livros SET titulo=\"%s\", ano=\"%d\", autor=\"%d\", paginas=\"%d\" WHERE idLivro = \"%d\"", b.Title, b.Year, b.Author.ID, b.Pages, b.ID)
+	case "DELETE":
+		if b.ID == 0 {
+			return "", errors.New("book has no ID")
+		}
+		sqlStatement += fmt.Sprintf("DELETE FROM Livros WHERE idLivro = \"%d\"", b.ID)
+	case "SELECT":
+		if b.ID == 0 {
+			return "", errors.New("book has no ID")
+		}
+		sqlStatement += fmt.Sprintf("SELECT * FROM Livros WHERE idLivro = \"%d\"", b.ID)
+	default:
+		return "", errors.New("invalid statement type")
+	}
+	return sqlStatement, nil
+}

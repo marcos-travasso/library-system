@@ -7,8 +7,6 @@ func TestPerson_PersonStatement(t *testing.T) {
 		name             string
 		args             Person
 		wantedStatements map[string]string
-		insertWant       string
-		updateWant       string
 	}{
 		{name: "One person",
 			args: Person{
@@ -85,7 +83,7 @@ func TestPerson_PersonStatement(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			for statementType, wanted := range tt.wantedStatements {
 				if got, _ := tt.args.SQLStatement(statementType); got != wanted {
-					t.Errorf("insertPerson() = %v, want %v", got, wanted)
+					t.Errorf("%s statement got = %v, expect = %v", statementType, got, wanted)
 				}
 			}
 		})

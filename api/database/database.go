@@ -12,16 +12,16 @@ type Database struct {
 }
 
 func (db *Database) CreateDatabase() {
-	err := os.Remove(db.Dir)
-	if err != nil {
-		log.Printf("Failed to remove: %q\n", err)
-		return
-	}
-
 	if _, err := os.Stat(db.Dir); os.IsNotExist(err) {
 		_, err := os.Create(db.Dir)
 		if err != nil {
 			log.Printf("Failed to create: %q\n", err)
+			return
+		}
+	} else {
+		err := os.Remove(db.Dir)
+		if err != nil {
+			log.Printf("Failed to remove: %q\n", err)
 			return
 		}
 	}

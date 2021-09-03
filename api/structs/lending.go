@@ -57,3 +57,24 @@ func (l Lending) SQLStatement(statementType string) (string, error) {
 	}
 	return sqlStatement, nil
 }
+
+func (l Lending) InsertDevolutionStatement(d Devolution) (string, error) {
+	sqlStatement := ""
+	if l.ID == 0 {
+		return "", errors.New("lending has no id")
+	}
+	if d.Date == "" {
+		return "", errors.New("devolution has no date")
+	}
+	sqlStatement += fmt.Sprintf("INSERT INTO devolucoes(emprestimo, datadedevolucao) values (\"%d\", \"%s\")", l.ID, d.Date)
+	return sqlStatement, nil
+}
+
+func (l Lending) SelectDevolutionStatement() (string, error) {
+	sqlStatement := ""
+	if l.ID == 0 {
+		return "", errors.New("lending has no id")
+	}
+	sqlStatement += fmt.Sprintf("SELECT * FROM devolucoes WHERE emprestimo = \"%d\"", l.ID)
+	return sqlStatement, nil
+}

@@ -85,7 +85,7 @@ func (b Book) SQLStatement(statementType string) (string, error) {
 	return sqlStatement, nil
 }
 
-func (b Book) LinkGenreSQLStatement(statementType string) (string, error) {
+func (b Book) LinkSQLStatement(statementType string) (string, error) {
 	if b.ID == 0 {
 		return "", errors.New("book has no id")
 	}

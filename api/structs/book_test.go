@@ -182,7 +182,7 @@ func TestBook_BookStatement(t *testing.T) {
 	}
 }
 
-func TestBook_LinkGenreSQLStatement(t *testing.T) {
+func TestBook_BookLinkSQLStatement(t *testing.T) {
 	tests := []struct {
 		name             string
 		args             Book
@@ -274,7 +274,7 @@ func TestBook_LinkGenreSQLStatement(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			for statementType, wanted := range tt.wantedStatements {
-				if got, _ := tt.args.LinkGenreSQLStatement(statementType); got != wanted {
+				if got, _ := tt.args.LinkSQLStatement(statementType); got != wanted {
 					t.Errorf("%s statement got = %v, expect = %v", statementType, got, wanted)
 				}
 			}
@@ -282,7 +282,7 @@ func TestBook_LinkGenreSQLStatement(t *testing.T) {
 	}
 }
 
-func TestBook_LinkSQLStatement(t *testing.T) {
+func TestBook_GenreLinkSQLStatement(t *testing.T) {
 	tests := []struct {
 		name             string
 		args             Genre

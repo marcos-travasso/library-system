@@ -19,11 +19,7 @@ func (db *Database) CreateDatabase() {
 			return
 		}
 	} else {
-		err := os.Remove(db.Dir)
-		if err != nil {
-			log.Printf("Failed to remove: %q\n", err)
-			return
-		}
+		db.clearDatabase()
 	}
 
 	db.fillDatabaseTables()
@@ -56,5 +52,13 @@ func (db *Database) fillDatabaseTables() {
 			log.Printf("%q: %s\n", err, sqlStmt)
 			return
 		}
+	}
+}
+
+func (db *Database) clearDatabase() {
+	err := os.Remove(db.Dir)
+	if err != nil {
+		log.Printf("Failed to remove: %q\n", err)
+		return
 	}
 }

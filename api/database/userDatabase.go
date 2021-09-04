@@ -25,30 +25,30 @@ func (dbDir Database) InsertUser(u structs.User) (int, error) {
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
-
+			log.Printf("Error to close database: %v", err)
 		}
 	}(db)
 
 	personID, err := dbDir.InsertPerson(u.Person)
 	if err != nil {
-		log.Fatal(err)
+		return 0, err
 	}
 	u.Person.ID = personID
 
 	addressID, err := dbDir.insertAddress(u.Address)
 	if err != nil {
-		log.Fatal(err)
+		return 0, err
 	}
 	u.Address.ID = addressID
 
 	err = sendInsertStatement(u, db)
 	if err != nil {
-		log.Fatal(err)
+		return 0, err
 	}
 
 	id, err := getLastUserID(db)
 	if err != nil {
-		log.Fatal(err)
+		return 0, err
 	}
 
 	return id, nil
@@ -59,7 +59,7 @@ func (dbDir Database) SelectUser(u entity) (structs.User, error) {
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
-
+			log.Printf("Error to close database: %v", err)
 		}
 	}(db)
 
@@ -67,7 +67,7 @@ func (dbDir Database) SelectUser(u entity) (structs.User, error) {
 
 	rows, err := db.Query(u.SQLStatement("SELECT"))
 	if err != nil {
-		log.Fatalf("Fail to query user id: %s", err)
+		log.Printf("Fail to query user id: %s", err)
 		return user, err
 	}
 
@@ -75,7 +75,8 @@ func (dbDir Database) SelectUser(u entity) (structs.User, error) {
 		responsible := sql.NullInt32{}
 		err = rows.Scan(&user.ID, &user.Person.ID, &user.CellNumber, &user.PhoneNumber, &user.Address.ID, &user.CPF, &user.Email, &responsible, &user.CreationDate, &user.Person.ID, &user.Person.Name, &user.Person.Gender, &user.Person.Birthday, &user.Address.ID, &user.Address.CEP, &user.Address.City, &user.Address.Neighborhood, &user.Address.Street, &user.Address.Number, &user.Address.Complement)
 		if err != nil {
-			log.Fatalf("Fail to receive user id: %s", err)
+			log.Printf("Fail to receive user id: %s", err)
+			return user, err
 		}
 	}
 
@@ -87,7 +88,7 @@ func (dbDir Database) SelectUser(u entity) (structs.User, error) {
 func getLastUserID(db *sql.DB) (int, error) {
 	rows, err := db.Query("SELECT idUsuario from Usuarios ORDER BY idUsuario DESC LIMIT 1")
 	if err != nil {
-		log.Fatalf("Fail to query user id: %s", err)
+		log.Printf("Fail to query user id: %s", err)
 		return 0, err
 	}
 
@@ -96,7 +97,8 @@ func getLastUserID(db *sql.DB) (int, error) {
 	for rows.Next() {
 		err = rows.Scan(&id)
 		if err != nil {
-			log.Fatalf("Fail to receive user id: %s", err)
+			log.Printf("Fail to receive user id: %s", err)
+			return 0, err
 		}
 	}
 
@@ -106,7 +108,7 @@ func getLastUserID(db *sql.DB) (int, error) {
 func getLastAddressID(db *sql.DB) (int, error) {
 	rows, err := db.Query("SELECT idEndereco from Enderecos ORDER BY idEndereco DESC LIMIT 1")
 	if err != nil {
-		log.Fatalf("Fail to query address id: %s", err)
+		log.Printf("Fail to query address id: %s", err)
 		return 0, err
 	}
 
@@ -115,7 +117,8 @@ func getLastAddressID(db *sql.DB) (int, error) {
 	for rows.Next() {
 		err = rows.Scan(&id)
 		if err != nil {
-			log.Fatalf("Fail to receive address id: %s", err)
+			log.Printf("Fail to receive address id: %s", err)
+			return 0, err
 		}
 	}
 
@@ -127,18 +130,18 @@ func (dbDir Database) insertAddress(a structs.Address) (int, error) {
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
-
+			log.Printf("Error to close database: %v", err)
 		}
 	}(db)
 
 	err := sendInsertStatement(a, db)
 	if err != nil {
-		log.Fatal(err)
+		return 0, err
 	}
 
 	id, err := getLastAddressID(db)
 	if err != nil {
-		log.Fatal(err)
+		return 0, err
 	}
 
 	return id, nil

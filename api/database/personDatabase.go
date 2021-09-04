@@ -10,18 +10,18 @@ func (dbDir Database) InsertPerson(p entity) (int, error) {
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
-
+			log.Printf("Error to close database: %v", err)
 		}
 	}(db)
 
 	err := sendInsertStatement(p, db)
 	if err != nil {
-		log.Fatal(err)
+		return 0, err
 	}
 
 	id, err := getLastPersonID(db)
 	if err != nil {
-		log.Fatal(err)
+		return 0, err
 	}
 
 	return id, nil
@@ -30,7 +30,7 @@ func (dbDir Database) InsertPerson(p entity) (int, error) {
 func getLastPersonID(db *sql.DB) (int, error) {
 	rows, err := db.Query("SELECT idPessoa from Pessoas ORDER BY idPessoa DESC LIMIT 1")
 	if err != nil {
-		log.Fatalf("Fail to query person id: %s", err)
+		log.Printf("Fail to query person id: %s", err)
 		return 0, err
 	}
 
@@ -39,7 +39,8 @@ func getLastPersonID(db *sql.DB) (int, error) {
 	for rows.Next() {
 		err = rows.Scan(&id)
 		if err != nil {
-			log.Fatalf("Fail to receive person id: %s", err)
+			log.Printf("Fail to receive person id: %s", err)
+			return 0, err
 		}
 	}
 

@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-var createdIDs = 0
+var createdUserIDs = 0
 
 func TestInsertUser(t *testing.T) {
 	tests := []struct {
@@ -58,7 +58,7 @@ func TestInsertUser(t *testing.T) {
 				t.Errorf("InsertUser() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			createdIDs++
+			createdUserIDs++
 			if got != tt.want {
 				t.Errorf("InsertUser() got = %v, want %v", got, tt.want)
 			}
@@ -192,8 +192,8 @@ func TestSelectUser(t *testing.T) {
 			} else if tt.wantErr && err == nil {
 				t.Error(err)
 			}
-			createdIDs++
-			tt.args.ID, tt.args.Person.ID, tt.args.Address.ID = createdIDs, createdIDs, createdIDs
+			createdUserIDs++
+			tt.args.ID, tt.args.Person.ID, tt.args.Address.ID = createdUserIDs, createdUserIDs, createdUserIDs
 
 			got, err := dbDir.SelectUser(tt.args)
 			if got != tt.args {

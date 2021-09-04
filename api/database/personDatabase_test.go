@@ -1,15 +1,18 @@
 package database
 
 import (
+	"database/sql"
 	"github.com/marcos-travasso/library-system/api/structs"
+	"log"
 	"testing"
 )
+
+var createdPersonIDs = 0
 
 func TestDatabase_InsertPerson(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    structs.Person
-		want    int
 		wantErr bool
 	}{
 		{
@@ -20,7 +23,6 @@ func TestDatabase_InsertPerson(t *testing.T) {
 				Birthday: "01/01/2002",
 				Gender:   "M",
 			},
-			want: 1,
 		},
 		{
 			name: "Empty person",
@@ -40,7 +42,6 @@ func TestDatabase_InsertPerson(t *testing.T) {
 				Birthday: "",
 				Gender:   "",
 			},
-			want: 2,
 		},
 	}
 
@@ -58,10 +59,36 @@ func TestDatabase_InsertPerson(t *testing.T) {
 			} else if tt.wantErr && err == nil {
 				t.Error(err)
 			}
+			createdPersonIDs++
 
-			if id != tt.want {
+			if id != createdPersonIDs {
 				t.Error(err)
 			}
 		})
+	}
+}
+
+func TestDatabase_getLastPerson(t *testing.T) {
+	dbDir := Database{Dir: "./test_person_db.db"}
+	err := dbDir.clearDatabase()
+	if err != nil {
+		return
+	}
+
+	var db = initializeDatabase(dbDir)
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Printf("Error to close database: %v", err)
+		}
+	}(db)
+
+	id, err := getLastPersonID(db)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if id > createdPersonIDs {
+		t.Error("id error")
 	}
 }

@@ -55,10 +55,12 @@ func (db *Database) fillDatabaseTables() {
 	}
 }
 
-func (db *Database) clearDatabase() {
-	err := os.Remove(db.Dir)
-	if err != nil {
-		log.Printf("Failed to remove: %q\n", err)
-		return
+func (dbDir *Database) clearDatabase() {
+	if _, err := os.Stat(dbDir.Dir); !os.IsNotExist(err) {
+		err := os.Remove(dbDir.Dir)
+		if err != nil {
+			log.Printf("Failed to remove: %q\n", err)
+			return
+		}
 	}
 }

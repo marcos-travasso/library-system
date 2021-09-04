@@ -53,7 +53,7 @@ func (u User) SQLStatement(statementType string) (string, error) {
 		if u.ID == 0 {
 			return "", errors.New("genre has no ID")
 		}
-		sqlStatement += fmt.Sprintf("SELECT * FROM Usuarios WHERE idUsuario = \"%d\"", u.ID)
+		sqlStatement += fmt.Sprintf("SELECT * FROM ((Usuarios INNER JOIN Pessoas ON Pessoas.idPessoa = Usuarios.pessoa) INNER JOIN Enderecos ON Usuarios.endereco = Enderecos.idEndereco) WHERE idUsuario = \"%d\"", u.ID)
 	default:
 		return "", errors.New("invalid statement type")
 	}

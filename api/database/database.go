@@ -11,22 +11,20 @@ type Database struct {
 	Dir string
 }
 
-func (db *Database) CreateDatabase() {
-	if _, err := os.Stat(db.Dir); os.IsNotExist(err) {
-		_, err := os.Create(db.Dir)
+func (dbDir *Database) CreateDatabase() {
+	if _, err := os.Stat(dbDir.Dir); os.IsNotExist(err) {
+		_, err := os.Create(dbDir.Dir)
 		if err != nil {
 			log.Printf("Failed to create: %q\n", err)
 			return
 		}
-	} else {
-		db.clearDatabase()
 	}
 
-	db.fillDatabaseTables()
+	dbDir.fillDatabaseTables()
 }
 
-func (db *Database) fillDatabaseTables() {
-	conn, err := sql.Open("sqlite3", db.Dir)
+func (dbDir *Database) fillDatabaseTables() {
+	conn, err := sql.Open("sqlite3", dbDir.Dir)
 	defer func(conn *sql.DB) {
 		err := conn.Close()
 		if err != nil {
@@ -63,4 +61,19 @@ func (dbDir *Database) clearDatabase() {
 			return
 		}
 	}
+}
+
+func sendInsertStatement(e entity, db *sql.DB) error {
+
+	statement, err := e.SQLStatement("INSERT")
+	if err != nil {
+		log.Fatalf("Fail to get statement: %s", err)
+	}
+
+	_, err = db.Exec(statement)
+	if err != nil {
+		log.Fatalf("Fail to insert: %s", err)
+	}
+
+	return err
 }

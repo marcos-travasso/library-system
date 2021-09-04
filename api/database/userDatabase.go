@@ -35,7 +35,7 @@ func (dbDir Database) InsertUser(u structs.User) (int, error) {
 	}
 	u.Person.ID = personID
 
-	addressID, err := dbDir.InsertPerson(u.Address)
+	addressID, err := dbDir.insertAddress(u.Address)
 	if err != nil {
 		log.Fatal(err)
 	}

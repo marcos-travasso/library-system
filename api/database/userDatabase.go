@@ -81,8 +81,55 @@ func (dbDir Database) SelectUser(u entity) (structs.User, error) {
 	}
 
 	user.CreationDate = user.CreationDate[:10]
-
 	return user, nil
+}
+
+func (dbDir Database) SelectUsers() ([]structs.User, error) {
+	var db = initializeDatabase(dbDir)
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Printf("Error to close database: %v", err)
+		}
+	}(db)
+
+	rows, err := db.Query("SELECT COUNT(*) FROM Usuarios")
+	if err != nil {
+		log.Printf("Fail to query user count: %s", err)
+		return nil, err
+	}
+	err = rows.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	userCount := 0
+	for rows.Next() {
+		err = rows.Scan(&userCount)
+		if err != nil {
+			log.Printf("Fail to receive user count: %s", err)
+			return nil, err
+		}
+	}
+	users := make([]structs.User, 0, userCount)
+
+	rows, err = db.Query("SELECT * FROM ((Usuarios INNER JOIN Pessoas ON Pessoas.idPessoa = Usuarios.pessoa) INNER JOIN Enderecos ON Usuarios.endereco = Enderecos.idEndereco)")
+	if err != nil {
+		log.Printf("Fail to query users: %s", err)
+		return nil, err
+	}
+
+	for i := 0; rows.Next(); i++ {
+		responsible := sql.NullInt32{}
+		err = rows.Scan(&users[i].ID, &users[i].Person.ID, &users[i].CellNumber, &users[i].PhoneNumber, &users[i].Address.ID, &users[i].CPF, &users[i].Email, &responsible, &users[i].CreationDate, &users[i].Person.ID, &users[i].Person.Name, &users[i].Person.Gender, &users[i].Person.Birthday, &users[i].Address.ID, &users[i].Address.CEP, &users[i].Address.City, &users[i].Address.Neighborhood, &users[i].Address.Street, &users[i].Address.Number, &users[i].Address.Complement)
+		if err != nil {
+			log.Printf("Fail to receive users id: %s", err)
+			return nil, err
+		}
+		users[i].CreationDate = users[i].CreationDate[:10]
+	}
+
+	return users, nil
 }
 
 func getLastUserID(db *sql.DB) (int, error) {

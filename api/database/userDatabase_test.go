@@ -205,3 +205,126 @@ func TestSelectUser(t *testing.T) {
 		})
 	}
 }
+
+func TestSelectUsers(t *testing.T) {
+	{
+		currentTime := time.Now()
+
+		tests := []struct {
+			name    string
+			args    structs.User
+			want    int
+			wantErr bool
+		}{
+			{
+				name: "First user",
+				args: structs.User{
+					ID: 0,
+					Person: structs.Person{
+						ID:       0,
+						Name:     "Marcos",
+						Birthday: "01/01/2002",
+						Gender:   "M",
+					},
+					CellNumber:  "12345678910",
+					PhoneNumber: "9876543210",
+					CPF:         "12345678910",
+					Email:       "testmail@mail.test",
+					Address: structs.Address{
+						ID:           0,
+						Number:       123,
+						CEP:          "12345678",
+						City:         "Curitiba",
+						Neighborhood: "Centro",
+						Street:       "XV",
+						Complement:   ""},
+					CreationDate: currentTime.Format("2006-01-02"),
+				},
+			},
+			{
+				name: "Second user",
+				args: structs.User{
+					ID: 0,
+					Person: structs.Person{
+						ID:       0,
+						Name:     "Clarice",
+						Birthday: "01/01/2000",
+						Gender:   "F",
+					},
+					CellNumber:  "10987654321",
+					PhoneNumber: "0123456789",
+					CPF:         "10987654321",
+					Email:       "testmail@test.mail",
+					Address: structs.Address{
+						ID:           0,
+						Number:       321,
+						CEP:          "98765432",
+						City:         "Curitiba",
+						Neighborhood: "Centro",
+						Street:       "XV",
+						Complement:   ""},
+					CreationDate: currentTime.Format("2006-01-02"),
+				},
+			},
+			{
+				name: "Third user",
+				args: structs.User{
+					ID: 0,
+					Person: structs.Person{
+						ID:       0,
+						Name:     "Aldous Huxley",
+						Birthday: "01/01/1970",
+						Gender:   "M",
+					},
+					CellNumber:  "",
+					PhoneNumber: "",
+					CPF:         "",
+					Email:       "",
+					Address: structs.Address{
+						ID:           0,
+						Number:       0,
+						CEP:          "",
+						City:         "",
+						Neighborhood: "",
+						Street:       "",
+						Complement:   ""},
+					CreationDate: currentTime.Format("2006-01-02"),
+				},
+			},
+		}
+
+		dbDir := Database{Dir: "./test_user_db.db"}
+		err := dbDir.clearDatabase()
+		if err != nil {
+			return
+		}
+
+		for _, tt := range tests {
+			t.Run(tt.name, func(t *testing.T) {
+				_, err := dbDir.InsertUser(tt.args)
+				if tt.wantErr && err != nil {
+					return
+				} else if tt.wantErr && err == nil {
+					t.Error(err)
+				}
+				createdUserIDs++
+				tt.args.ID, tt.args.Person.ID, tt.args.Address.ID = createdUserIDs, createdUserIDs, createdUserIDs
+			})
+		}
+
+		users := make([]structs.User, 0, len(tests))
+		users, err = db.SelectUsers()
+		if err != nil {
+			t.Error(err)
+		}
+
+		for i := range tests {
+			if tests[i].args != users[i] {
+				gotJSON, _ := json.Marshal(users)
+				wantJSON, _ := json.Marshal(tests[i].args)
+
+				t.Errorf("Select users got = %v, want %v", string(gotJSON), string(wantJSON))
+			}
+		}
+	}
+}

@@ -78,9 +78,9 @@ func TestSelectUser(t *testing.T) {
 		{
 			name: "First user",
 			args: structs.User{
-				ID: 1,
+				ID: 0,
 				Person: structs.Person{
-					ID:       1,
+					ID:       0,
 					Name:     "Marcos",
 					Birthday: "01/01/2002",
 					Gender:   "M",
@@ -90,7 +90,7 @@ func TestSelectUser(t *testing.T) {
 				CPF:         "12345678910",
 				Email:       "testmail@mail.test",
 				Address: structs.Address{
-					ID:           1,
+					ID:           0,
 					Number:       123,
 					CEP:          "12345678",
 					City:         "Curitiba",

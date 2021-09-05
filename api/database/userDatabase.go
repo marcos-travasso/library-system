@@ -70,6 +70,12 @@ func (dbDir Database) SelectUser(u entity) (structs.User, error) {
 		log.Printf("Fail to query user id: %s", err)
 		return user, err
 	}
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+
+		}
+	}(rows)
 
 	for rows.Next() {
 		responsible := sql.NullInt32{}

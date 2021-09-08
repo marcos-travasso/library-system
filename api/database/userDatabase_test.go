@@ -291,7 +291,7 @@ func TestSelectUsers(t *testing.T) {
 			},
 		}
 
-		dbDir := Database{Dir: "./test_user_db.db"}
+		dbDir := Database{Dir: "./temp/test_usersSelect.db"}
 		err := dbDir.clearDatabase()
 		if err != nil {
 			t.Error(err)

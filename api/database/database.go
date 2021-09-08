@@ -7,6 +7,10 @@ import (
 	"os"
 )
 
+type entity interface {
+	SQLStatement(statementType string) (string, error)
+}
+
 type Database struct {
 	Dir string
 }
@@ -24,6 +28,16 @@ func (dbDir *Database) CreateDatabase() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func initializeDatabase(dbDir Database) *sql.DB {
+	dbDir.CreateDatabase()
+	conn, err := sql.Open("sqlite3", dbDir.Dir)
+	if err != nil {
+		log.Fatalf("Failed to open database: %s", err)
+	}
+
+	return conn
 }
 
 func (dbDir *Database) fillDatabaseTables() error {

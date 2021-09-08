@@ -6,20 +6,6 @@ import (
 	"log"
 )
 
-type entity interface {
-	SQLStatement(statementType string) (string, error)
-}
-
-func initializeDatabase(dbDir Database) *sql.DB {
-	dbDir.CreateDatabase()
-	conn, err := sql.Open("sqlite3", dbDir.Dir)
-	if err != nil {
-		log.Fatalf("Failed to open database: %s", err)
-	}
-
-	return conn
-}
-
 func (dbDir Database) InsertUser(u structs.User) (int, error) {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {

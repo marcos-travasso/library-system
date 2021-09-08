@@ -170,6 +170,23 @@ func (dbDir Database) deleteAddress(a structs.Address) error {
 	return nil
 }
 
+func (dbDir Database) updateAddress(a structs.Address) error {
+	var db = initializeDatabase(dbDir)
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Printf("Error to close database: %v", err)
+		}
+	}(db)
+
+	err := sendStatement(a, "UPDATE", db)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func getLastUserID(db *sql.DB) (int, error) {
 	rows, err := db.Query("SELECT idUsuario from Usuarios ORDER BY idUsuario DESC LIMIT 1")
 	if err != nil {

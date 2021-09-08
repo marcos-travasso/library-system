@@ -104,10 +104,6 @@ func (dbDir Database) SelectUsers() ([]structs.User, error) {
 		log.Printf("Fail to query user count: %s", err)
 		return nil, err
 	}
-	err = rows.Close()
-	if err != nil {
-		return nil, err
-	}
 
 	userCount := 0
 	for rows.Next() {
@@ -117,7 +113,7 @@ func (dbDir Database) SelectUsers() ([]structs.User, error) {
 			return nil, err
 		}
 	}
-	users := make([]structs.User, 0, userCount)
+	users := make([]structs.User, userCount, userCount)
 
 	rows, err = db.Query("SELECT * FROM ((Usuarios INNER JOIN Pessoas ON Pessoas.idPessoa = Usuarios.pessoa) INNER JOIN Enderecos ON Usuarios.endereco = Enderecos.idEndereco)")
 	if err != nil {

@@ -311,7 +311,7 @@ func TestSelectUsers(t *testing.T) {
 			})
 		}
 
-		users := make([]structs.User, 0, len(tests))
+		users := make([]structs.User, len(tests), len(tests))
 		users, err = dbDir.SelectUsers()
 		if err != nil {
 			t.Error(err)

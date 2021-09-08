@@ -7,8 +7,6 @@ import (
 	"time"
 )
 
-var createdUserIDs = 0
-
 func TestInsertUser(t *testing.T) {
 	tests := []struct {
 		name    string
@@ -58,7 +56,6 @@ func TestInsertUser(t *testing.T) {
 				t.Errorf("InsertUser() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			createdUserIDs++
 			if got != tt.want {
 				t.Errorf("InsertUser() got = %v, want %v", got, tt.want)
 			}
@@ -183,6 +180,7 @@ func TestSelectUser(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	createdUserIDs := 0
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -298,6 +296,7 @@ func TestSelectUsers(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
+		createdUsersIDs := 0
 
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
@@ -307,8 +306,8 @@ func TestSelectUsers(t *testing.T) {
 				} else if tt.wantErr && err == nil {
 					t.Error(err)
 				}
-				createdUserIDs++
-				tt.args.ID, tt.args.Person.ID, tt.args.Address.ID = createdUserIDs, createdUserIDs, createdUserIDs
+				createdUsersIDs++
+				tt.args.ID, tt.args.Person.ID, tt.args.Address.ID = createdUsersIDs, createdUsersIDs, createdUsersIDs
 			})
 		}
 

@@ -319,7 +319,7 @@ func TestSelectUsers(t *testing.T) {
 
 		for i := range tests {
 			if tests[i].args != users[i] {
-				gotJSON, _ := json.Marshal(users)
+				gotJSON, _ := json.Marshal(users[i])
 				wantJSON, _ := json.Marshal(tests[i].args)
 
 				t.Errorf("Select users got = %v, want %v", string(gotJSON), string(wantJSON))

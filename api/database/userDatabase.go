@@ -73,7 +73,7 @@ func (dbDir Database) SelectUser(u entity) (structs.User, error) {
 	defer func(rows *sql.Rows) {
 		err := rows.Close()
 		if err != nil {
-
+			log.Print(err)
 		}
 	}(rows)
 

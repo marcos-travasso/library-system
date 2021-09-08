@@ -44,6 +44,23 @@ func (dbDir Database) deletePerson(p entity) error {
 	return nil
 }
 
+func (dbDir Database) updatePerson(p entity) error {
+	var db = initializeDatabase(dbDir)
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Printf("Error to close database: %v", err)
+		}
+	}(db)
+
+	err := sendStatement(p, "UPDATE", db)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func getLastPersonID(db *sql.DB) (int, error) {
 	rows, err := db.Query("SELECT idPessoa from Pessoas ORDER BY idPessoa DESC LIMIT 1")
 	if err != nil {

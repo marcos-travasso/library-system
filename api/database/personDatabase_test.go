@@ -45,7 +45,7 @@ func TestDatabase_InsertPerson(t *testing.T) {
 		},
 	}
 
-	dbDir := Database{Dir: "./test_person_db.db"}
+	dbDir := Database{Dir: "./temp/test_personInsert.db"}
 	err := dbDir.clearDatabase()
 	if err != nil {
 		t.Error(err)
@@ -69,7 +69,7 @@ func TestDatabase_InsertPerson(t *testing.T) {
 }
 
 func TestDatabase_getLastPerson(t *testing.T) {
-	dbDir := Database{Dir: "./test_person_db.db"}
+	dbDir := Database{Dir: "./temp/test_personLast.db"}
 	err := dbDir.clearDatabase()
 	if err != nil {
 		t.Error(err)

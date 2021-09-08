@@ -48,7 +48,7 @@ func TestDatabase_InsertPerson(t *testing.T) {
 	dbDir := Database{Dir: "./test_person_db.db"}
 	err := dbDir.clearDatabase()
 	if err != nil {
-		return
+		t.Error(err)
 	}
 
 	for _, tt := range tests {
@@ -72,7 +72,7 @@ func TestDatabase_getLastPerson(t *testing.T) {
 	dbDir := Database{Dir: "./test_person_db.db"}
 	err := dbDir.clearDatabase()
 	if err != nil {
-		return
+		t.Error(err)
 	}
 
 	var db = initializeDatabase(dbDir)

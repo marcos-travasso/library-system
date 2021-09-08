@@ -48,7 +48,7 @@ func TestInsertUser(t *testing.T) {
 	dbDir := Database{Dir: "./test_user_db.db"}
 	err := dbDir.clearDatabase()
 	if err != nil {
-		return
+		t.Error(err)
 	}
 
 	for _, tt := range tests {
@@ -181,7 +181,7 @@ func TestSelectUser(t *testing.T) {
 	dbDir := Database{Dir: "./test_user_db.db"}
 	err := dbDir.clearDatabase()
 	if err != nil {
-		return
+		t.Error(err)
 	}
 
 	for _, tt := range tests {
@@ -296,7 +296,7 @@ func TestSelectUsers(t *testing.T) {
 		dbDir := Database{Dir: "./test_user_db.db"}
 		err := dbDir.clearDatabase()
 		if err != nil {
-			return
+			t.Error(err)
 		}
 
 		for _, tt := range tests {
@@ -313,7 +313,7 @@ func TestSelectUsers(t *testing.T) {
 		}
 
 		users := make([]structs.User, 0, len(tests))
-		users, err = db.SelectUsers()
+		users, err = dbDir.SelectUsers()
 		if err != nil {
 			t.Error(err)
 		}

@@ -84,3 +84,31 @@ func sendStatement(e entity, statementType string, db *sql.DB) error {
 
 	return err
 }
+
+func (dbDir *Database) countRows(column string) (int, error) {
+	var db = initializeDatabase(*dbDir)
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Printf("Error to close database: %v", err)
+		}
+	}(db)
+
+	query := "SELECT COUNT(*) FROM " + column
+	rows, err := db.Query(query)
+	if err != nil {
+		log.Printf("Fail to count: %s", err)
+		return 0, err
+	}
+
+	count := 0
+	for rows.Next() {
+		err = rows.Scan(&count)
+		if err != nil {
+			log.Printf("Fail to receive user count: %s", err)
+			return 0, err
+		}
+	}
+
+	return count, nil
+}

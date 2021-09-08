@@ -99,23 +99,15 @@ func (dbDir Database) SelectUsers() ([]structs.User, error) {
 		}
 	}(db)
 
-	rows, err := db.Query("SELECT COUNT(*) FROM Usuarios")
+	userCount, err := dbDir.countRows("Usuarios")
 	if err != nil {
-		log.Printf("Fail to query user count: %s", err)
+		log.Printf("Fail to receive user count: %s", err)
 		return nil, err
 	}
 
-	userCount := 0
-	for rows.Next() {
-		err = rows.Scan(&userCount)
-		if err != nil {
-			log.Printf("Fail to receive user count: %s", err)
-			return nil, err
-		}
-	}
 	users := make([]structs.User, userCount, userCount)
 
-	rows, err = db.Query("SELECT * FROM ((Usuarios INNER JOIN Pessoas ON Pessoas.idPessoa = Usuarios.pessoa) INNER JOIN Enderecos ON Usuarios.endereco = Enderecos.idEndereco)")
+	rows, err := db.Query("SELECT * FROM ((Usuarios INNER JOIN Pessoas ON Pessoas.idPessoa = Usuarios.pessoa) INNER JOIN Enderecos ON Usuarios.endereco = Enderecos.idEndereco)")
 	if err != nil {
 		log.Printf("Fail to query users: %s", err)
 		return nil, err

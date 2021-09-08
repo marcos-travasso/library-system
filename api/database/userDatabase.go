@@ -126,6 +126,50 @@ func (dbDir Database) SelectUsers() ([]structs.User, error) {
 	return users, nil
 }
 
+func (dbDir Database) DeleteUser(u structs.User) error {
+	var db = initializeDatabase(dbDir)
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Printf("Error to close database: %v", err)
+		}
+	}(db)
+
+	err := sendStatement(u, "DELETE", db)
+	if err != nil {
+		return err
+	}
+
+	err = dbDir.deleteAddress(u.Address)
+	if err != nil {
+		return err
+	}
+
+	err = dbDir.deletePerson(u.Person)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (dbDir Database) deleteAddress(a structs.Address) error {
+	var db = initializeDatabase(dbDir)
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Printf("Error to close database: %v", err)
+		}
+	}(db)
+
+	err := sendStatement(a, "DELETE", db)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func getLastUserID(db *sql.DB) (int, error) {
 	rows, err := db.Query("SELECT idUsuario from Usuarios ORDER BY idUsuario DESC LIMIT 1")
 	if err != nil {

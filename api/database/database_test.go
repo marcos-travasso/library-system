@@ -6,7 +6,7 @@ import (
 )
 
 var db = Database{
-	"./test_db.db",
+	"./temp/test_db.db",
 }
 
 func TestDatabase_CreateDatabase(t *testing.T) {

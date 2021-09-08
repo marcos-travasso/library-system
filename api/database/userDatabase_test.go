@@ -217,9 +217,9 @@ func TestSelectUsers(t *testing.T) {
 			{
 				name: "First user",
 				args: structs.User{
-					ID: 0,
+					ID: 1,
 					Person: structs.Person{
-						ID:       0,
+						ID:       1,
 						Name:     "Marcos",
 						Birthday: "01/01/2002",
 						Gender:   "M",
@@ -229,7 +229,7 @@ func TestSelectUsers(t *testing.T) {
 					CPF:         "12345678910",
 					Email:       "testmail@mail.test",
 					Address: structs.Address{
-						ID:           0,
+						ID:           1,
 						Number:       123,
 						CEP:          "12345678",
 						City:         "Curitiba",
@@ -242,9 +242,9 @@ func TestSelectUsers(t *testing.T) {
 			{
 				name: "Second user",
 				args: structs.User{
-					ID: 0,
+					ID: 2,
 					Person: structs.Person{
-						ID:       0,
+						ID:       2,
 						Name:     "Clarice",
 						Birthday: "01/01/2000",
 						Gender:   "F",
@@ -254,7 +254,7 @@ func TestSelectUsers(t *testing.T) {
 					CPF:         "10987654321",
 					Email:       "testmail@test.mail",
 					Address: structs.Address{
-						ID:           0,
+						ID:           2,
 						Number:       321,
 						CEP:          "98765432",
 						City:         "Curitiba",
@@ -267,9 +267,9 @@ func TestSelectUsers(t *testing.T) {
 			{
 				name: "Third user",
 				args: structs.User{
-					ID: 0,
+					ID: 3,
 					Person: structs.Person{
-						ID:       0,
+						ID:       3,
 						Name:     "Aldous Huxley",
 						Birthday: "01/01/1970",
 						Gender:   "M",
@@ -279,9 +279,9 @@ func TestSelectUsers(t *testing.T) {
 					CPF:         "",
 					Email:       "",
 					Address: structs.Address{
-						ID:           0,
+						ID:           3,
 						Number:       0,
-						CEP:          "",
+						CEP:          "123456789",
 						City:         "",
 						Neighborhood: "",
 						Street:       "",
@@ -296,7 +296,6 @@ func TestSelectUsers(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		createdUsersIDs := 0
 
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
@@ -306,8 +305,6 @@ func TestSelectUsers(t *testing.T) {
 				} else if tt.wantErr && err == nil {
 					t.Error(err)
 				}
-				createdUsersIDs++
-				tt.args.ID, tt.args.Person.ID, tt.args.Address.ID = createdUsersIDs, createdUsersIDs, createdUsersIDs
 			})
 		}
 

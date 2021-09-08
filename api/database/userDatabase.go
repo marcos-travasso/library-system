@@ -41,7 +41,7 @@ func (dbDir Database) InsertUser(u structs.User) (int, error) {
 	}
 	u.Address.ID = addressID
 
-	err = sendInsertStatement(u, db)
+	err = sendStatement(u, "INSERT", db)
 	if err != nil {
 		return 0, err
 	}
@@ -183,7 +183,7 @@ func (dbDir Database) insertAddress(a structs.Address) (int, error) {
 		}
 	}(db)
 
-	err := sendInsertStatement(a, db)
+	err := sendStatement(a, "INSERT", db)
 	if err != nil {
 		return 0, err
 	}

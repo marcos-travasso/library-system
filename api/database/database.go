@@ -68,9 +68,9 @@ func (dbDir *Database) clearDatabase() error {
 	return nil
 }
 
-func sendInsertStatement(e entity, db *sql.DB) error {
+func sendStatement(e entity, statementType string, db *sql.DB) error {
 
-	statement, err := e.SQLStatement("INSERT")
+	statement, err := e.SQLStatement(statementType)
 	if err != nil {
 		log.Printf("Fail to get statement: %s", err)
 		return err
@@ -78,7 +78,7 @@ func sendInsertStatement(e entity, db *sql.DB) error {
 
 	_, err = db.Exec(statement)
 	if err != nil {
-		log.Printf("Fail to insert: %s", err)
+		log.Printf("Fail to %s: %s", statementType, err)
 		return err
 	}
 

@@ -14,7 +14,7 @@ func (dbDir Database) insertPerson(p entity) (int, error) {
 		}
 	}(db)
 
-	err := sendInsertStatement(p, db)
+	err := sendStatement(p, "INSERT", db)
 	if err != nil {
 		return 0, err
 	}

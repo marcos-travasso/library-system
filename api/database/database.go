@@ -99,7 +99,7 @@ func sendStatement(e entity, statementType string, db *sql.DB) error {
 	return err
 }
 
-func (dbDir *Database) countRows(column string) (int, error) {
+func (dbDir *Database) countRows(table string) (int, error) {
 	var db = initializeDatabase(*dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()
@@ -108,7 +108,7 @@ func (dbDir *Database) countRows(column string) (int, error) {
 		}
 	}(db)
 
-	query := "SELECT COUNT(*) FROM " + column
+	query := "SELECT COUNT(*) FROM " + table
 	rows, err := db.Query(query)
 	if err != nil {
 		log.Printf("Fail to count: %s", err)
@@ -119,10 +119,38 @@ func (dbDir *Database) countRows(column string) (int, error) {
 	for rows.Next() {
 		err = rows.Scan(&count)
 		if err != nil {
-			log.Printf("Fail to receive user count: %s", err)
+			log.Printf("Fail to receive count: %s", err)
 			return 0, err
 		}
 	}
 
 	return count, nil
+}
+
+func (dbDir *Database) getLastID(table string, column string) (int, error) {
+	var db = initializeDatabase(*dbDir)
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Printf("Error to close database: %v", err)
+		}
+	}(db)
+
+	query := "SELECT " + column + " from " + table + " ORDER BY " + column + " DESC LIMIT 1"
+	rows, err := db.Query(query)
+	if err != nil {
+		log.Printf("Fail to select: %s", err)
+		return 0, err
+	}
+
+	id := 0
+	for rows.Next() {
+		err = rows.Scan(&id)
+		if err != nil {
+			log.Printf("Fail to receive last ID: %s", err)
+			return 0, err
+		}
+	}
+
+	return id, nil
 }

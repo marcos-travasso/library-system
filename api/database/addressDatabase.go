@@ -20,12 +20,7 @@ func (dbDir Database) insertAddress(a structs.Address) (int, error) {
 		return 0, err
 	}
 
-	id, err := getLastAddressID(db)
-	if err != nil {
-		return 0, err
-	}
-
-	return id, nil
+	return dbDir.getLastID("Enderecos", "idEndereco")
 }
 
 func (dbDir Database) deleteAddress(a structs.Address) error {
@@ -60,24 +55,4 @@ func (dbDir Database) updateAddress(a structs.Address) error {
 	}
 
 	return nil
-}
-
-func getLastAddressID(db *sql.DB) (int, error) {
-	rows, err := db.Query("SELECT idEndereco from Enderecos ORDER BY idEndereco DESC LIMIT 1")
-	if err != nil {
-		log.Printf("Fail to query address id: %s", err)
-		return 0, err
-	}
-
-	id := 0
-
-	for rows.Next() {
-		err = rows.Scan(&id)
-		if err != nil {
-			log.Printf("Fail to receive address id: %s", err)
-			return 0, err
-		}
-	}
-
-	return id, nil
 }

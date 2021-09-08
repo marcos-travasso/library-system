@@ -32,12 +32,7 @@ func (dbDir Database) InsertUser(u structs.User) (int, error) {
 		return 0, err
 	}
 
-	id, err := getLastUserID(db)
-	if err != nil {
-		return 0, err
-	}
-
-	return id, nil
+	return dbDir.getLastID("Usuarios", "idUsuario")
 }
 
 func (dbDir Database) SelectUser(u structs.User) (structs.User, error) {
@@ -164,24 +159,4 @@ func (dbDir Database) UpdateUser(u structs.User) error {
 	}
 
 	return nil
-}
-
-func getLastUserID(db *sql.DB) (int, error) {
-	rows, err := db.Query("SELECT idUsuario from Usuarios ORDER BY idUsuario DESC LIMIT 1")
-	if err != nil {
-		log.Printf("Fail to query user id: %s", err)
-		return 0, err
-	}
-
-	id := 0
-
-	for rows.Next() {
-		err = rows.Scan(&id)
-		if err != nil {
-			log.Printf("Fail to receive user id: %s", err)
-			return 0, err
-		}
-	}
-
-	return id, nil
 }

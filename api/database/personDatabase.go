@@ -19,12 +19,7 @@ func (dbDir Database) insertPerson(p entity) (int, error) {
 		return 0, err
 	}
 
-	id, err := getLastPersonID(db)
-	if err != nil {
-		return 0, err
-	}
-
-	return id, nil
+	return dbDir.getLastID("Pessoas", "idPessoa")
 }
 
 func (dbDir Database) deletePerson(p entity) error {
@@ -59,24 +54,4 @@ func (dbDir Database) updatePerson(p entity) error {
 	}
 
 	return nil
-}
-
-func getLastPersonID(db *sql.DB) (int, error) {
-	rows, err := db.Query("SELECT idPessoa from Pessoas ORDER BY idPessoa DESC LIMIT 1")
-	if err != nil {
-		log.Printf("Fail to query person id: %s", err)
-		return 0, err
-	}
-
-	id := 0
-
-	for rows.Next() {
-		err = rows.Scan(&id)
-		if err != nil {
-			log.Printf("Fail to receive person id: %s", err)
-			return 0, err
-		}
-	}
-
-	return id, nil
 }

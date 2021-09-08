@@ -62,7 +62,7 @@ func TestDatabase_InsertPerson(t *testing.T) {
 			createdPersonIDs++
 
 			if id != createdPersonIDs {
-				t.Error(err)
+				t.Error("Fail to check person id")
 			}
 		})
 	}
@@ -83,7 +83,7 @@ func TestDatabase_getLastPerson(t *testing.T) {
 		}
 	}(db)
 
-	id, err := getLastPersonID(db)
+	id, err := dbDir.getLastID("Pessoas", "idPessoa")
 	if err != nil {
 		t.Error(err)
 	}

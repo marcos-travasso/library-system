@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func (dbDir Database) InsertPerson(p entity) (int, error) {
+func (dbDir Database) insertPerson(p entity) (int, error) {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()

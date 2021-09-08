@@ -29,7 +29,7 @@ func (dbDir Database) InsertUser(u structs.User) (int, error) {
 		}
 	}(db)
 
-	personID, err := dbDir.InsertPerson(u.Person)
+	personID, err := dbDir.insertPerson(u.Person)
 	if err != nil {
 		return 0, err
 	}
@@ -54,7 +54,7 @@ func (dbDir Database) InsertUser(u structs.User) (int, error) {
 	return id, nil
 }
 
-func (dbDir Database) SelectUser(u entity) (structs.User, error) {
+func (dbDir Database) SelectUser(u structs.User) (structs.User, error) {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()

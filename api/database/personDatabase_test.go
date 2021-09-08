@@ -53,7 +53,7 @@ func TestDatabase_InsertPerson(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			id, err := dbDir.InsertPerson(tt.args)
+			id, err := dbDir.insertPerson(tt.args)
 			if tt.wantErr && err != nil {
 				return
 			} else if tt.wantErr && err == nil {

@@ -153,6 +153,33 @@ func (dbDir Database) DeleteUser(u structs.User) error {
 	return nil
 }
 
+func (dbDir Database) UpdateUser(u structs.User) error {
+	var db = initializeDatabase(dbDir)
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Printf("Error to close database: %v", err)
+		}
+	}(db)
+
+	err := sendStatement(u, "UPDATE", db)
+	if err != nil {
+		return err
+	}
+
+	err = dbDir.updateAddress(u.Address)
+	if err != nil {
+		return err
+	}
+
+	err = dbDir.updatePerson(u.Person)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (dbDir Database) deleteAddress(a structs.Address) error {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {

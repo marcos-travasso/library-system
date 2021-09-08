@@ -457,3 +457,95 @@ func TestDeleteUser(t *testing.T) {
 		}
 	}
 }
+
+func TestUpdateUser(t *testing.T) {
+	currentTime := time.Now()
+
+	tests := []struct {
+		name       string
+		argsBefore structs.User
+		argsAfter  structs.User
+	}{
+		{
+			name: "Insert user",
+			argsBefore: structs.User{
+				ID: 1,
+				Person: structs.Person{
+					ID:       1,
+					Name:     "Marcos",
+					Birthday: "01/01/2002",
+					Gender:   "M",
+				},
+				CellNumber:  "12345678910",
+				PhoneNumber: "9876543210",
+				CPF:         "12345678910",
+				Email:       "testmail@mail.test",
+				Address: structs.Address{
+					ID:           1,
+					Number:       123,
+					CEP:          "12345678",
+					City:         "Curitiba",
+					Neighborhood: "Centro",
+					Street:       "XV",
+					Complement:   "",
+				},
+			},
+			argsAfter: structs.User{
+				ID: 1,
+				Person: structs.Person{
+					ID:       1,
+					Name:     "Marco",
+					Birthday: "01/01/2000",
+					Gender:   "M",
+				},
+				CellNumber:  "10987654321",
+				PhoneNumber: "0123456789",
+				CPF:         "10987654321",
+				Email:       "testmail@test.mail",
+				Address: structs.Address{
+					ID:           1,
+					Number:       321,
+					CEP:          "87654321",
+					City:         "Curitiba",
+					Neighborhood: "Centro",
+					Street:       "XV",
+					Complement:   "",
+				},
+				CreationDate: currentTime.Format("2006-01-02"),
+			},
+		},
+	}
+
+	dbDir := Database{Dir: "./temp/test_userUpdate.db"}
+	err := dbDir.clearDatabase()
+	if err != nil {
+		t.Error(err)
+	}
+
+	for _, tt := range tests {
+		_, err := dbDir.InsertUser(tt.argsBefore)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+
+		err = dbDir.UpdateUser(tt.argsAfter)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+
+		createdUser, err := dbDir.SelectUser(tt.argsAfter)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+
+		if createdUser != tt.argsAfter {
+			gotJSON, _ := json.Marshal(createdUser)
+			wantJSON, _ := json.Marshal(tt.argsAfter)
+
+			t.Errorf("UpdateUser() got = %v, want %v", string(gotJSON), string(wantJSON))
+		}
+	}
+}

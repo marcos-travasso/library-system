@@ -60,7 +60,7 @@ func (dbDir Database) SelectUser(u structs.User) (structs.User, error) {
 
 	for rows.Next() {
 		responsible := sql.NullInt32{}
-		err = rows.Scan(&user.ID, &user.Person.ID, &user.CellNumber, &user.PhoneNumber, &user.Address.ID, &user.CPF, &user.Email, &responsible, &user.CreationDate, &user.Person.ID, &user.Person.Name, &user.Person.Gender, &user.Person.Birthday, &user.Address.ID, &user.Address.CEP, &user.Address.City, &user.Address.Neighborhood, &user.Address.Street, &user.Address.Number, &user.Address.Complement)
+		err = rows.Scan(&user.ID, &user.CellNumber, &user.PhoneNumber, &user.CPF, &user.Email, &responsible, &user.CreationDate, &user.Person.ID, &user.Person.Name, &user.Person.Gender, &user.Person.Birthday, &user.Address.ID, &user.Address.CEP, &user.Address.City, &user.Address.Neighborhood, &user.Address.Street, &user.Address.Number, &user.Address.Complement)
 		if err != nil {
 			log.Printf("Fail to receive user id: %s", err)
 			return user, err
@@ -88,7 +88,7 @@ func (dbDir Database) SelectUsers() ([]structs.User, error) {
 
 	users := make([]structs.User, userCount, userCount)
 
-	rows, err := db.Query("SELECT * FROM ((Usuarios INNER JOIN Pessoas ON Pessoas.idPessoa = Usuarios.pessoa) INNER JOIN Enderecos ON Usuarios.endereco = Enderecos.idEndereco)")
+	rows, err := db.Query("SELECT idUsuario, celular, telefone, cpf, email, responsavel, criacao, idPessoa, nome, genero, nascimento, idEndereco, cep, cidade, bairro, rua, numero, complemento FROM ((Usuarios INNER JOIN Pessoas ON Pessoas.idPessoa = Usuarios.pessoa) INNER JOIN Enderecos ON Usuarios.endereco = Enderecos.idEndereco)")
 	if err != nil {
 		log.Printf("Fail to query users: %s", err)
 		return nil, err
@@ -96,7 +96,7 @@ func (dbDir Database) SelectUsers() ([]structs.User, error) {
 
 	for i := 0; rows.Next(); i++ {
 		responsible := sql.NullInt32{}
-		err = rows.Scan(&users[i].ID, &users[i].Person.ID, &users[i].CellNumber, &users[i].PhoneNumber, &users[i].Address.ID, &users[i].CPF, &users[i].Email, &responsible, &users[i].CreationDate, &users[i].Person.ID, &users[i].Person.Name, &users[i].Person.Gender, &users[i].Person.Birthday, &users[i].Address.ID, &users[i].Address.CEP, &users[i].Address.City, &users[i].Address.Neighborhood, &users[i].Address.Street, &users[i].Address.Number, &users[i].Address.Complement)
+		err = rows.Scan(&users[i].ID, &users[i].CellNumber, &users[i].PhoneNumber, &users[i].CPF, &users[i].Email, &responsible, &users[i].CreationDate, &users[i].Person.ID, &users[i].Person.Name, &users[i].Person.Gender, &users[i].Person.Birthday, &users[i].Address.ID, &users[i].Address.CEP, &users[i].Address.City, &users[i].Address.Neighborhood, &users[i].Address.Street, &users[i].Address.Number, &users[i].Address.Complement)
 		if err != nil {
 			log.Printf("Fail to receive users id: %s", err)
 			return nil, err

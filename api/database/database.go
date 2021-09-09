@@ -154,3 +154,42 @@ func (dbDir *Database) getLastID(table string, column string) (int, error) {
 
 	return id, nil
 }
+
+func (dbDir *Database) checkIfRowExists(e entity) (int, error) {
+	var db = initializeDatabase(*dbDir)
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Printf("Error to close database: %v", err)
+		}
+	}(db)
+
+	rows, err := db.Query(e.SQLStatement("SELECT"))
+	if err != nil {
+		log.Printf("Fail to query: %s", err)
+		return 0, err
+	}
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+			log.Print(err)
+		}
+	}(rows)
+
+	for rows.Next() {
+		existentID := sql.NullInt16{}
+		name := sql.NullString{}
+		err = rows.Scan(&existentID, &name)
+
+		if err != nil {
+			log.Printf("Fail to receive row: %s", err)
+			return 0, err
+		}
+
+		if existentID.Valid {
+			return int(existentID.Int16), nil
+		}
+	}
+
+	return 0, nil
+}

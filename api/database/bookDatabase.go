@@ -148,3 +148,25 @@ func (dbDir Database) SelectBooks() ([]structs.Book, error) {
 
 	return books, nil
 }
+
+func (dbDir Database) DeleteBook(b structs.Book) error {
+	var db = initializeDatabase(dbDir)
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Printf("Error to close database: %v", err)
+		}
+	}(db)
+
+	err := sendLinkStatement(b, "DELETE", db)
+	if err != nil {
+		return err
+	}
+
+	err = sendStatement(b, "DELETE", db)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

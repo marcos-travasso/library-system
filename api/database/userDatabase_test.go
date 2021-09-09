@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func TestInsertUser(t *testing.T) {
+func TestDatabase_InsertUser(t *testing.T) {
 	tests := []struct {
 		name string
 		args structs.User
@@ -61,7 +61,7 @@ func TestInsertUser(t *testing.T) {
 	}
 }
 
-func TestSelectUser(t *testing.T) {
+func TestDatabase_SelectUser(t *testing.T) {
 	currentTime := time.Now()
 
 	tests := []struct {
@@ -201,7 +201,7 @@ func TestSelectUser(t *testing.T) {
 	}
 }
 
-func TestSelectUsers(t *testing.T) {
+func TestDatabase_SelectUsers(t *testing.T) {
 	{
 		currentTime := time.Now()
 
@@ -318,7 +318,7 @@ func TestSelectUsers(t *testing.T) {
 	}
 }
 
-func TestDeleteUser(t *testing.T) {
+func TestDatabase_DeleteUser(t *testing.T) {
 	{
 		currentTime := time.Now()
 
@@ -445,7 +445,7 @@ func TestDeleteUser(t *testing.T) {
 	}
 }
 
-func TestUpdateUser(t *testing.T) {
+func TestDatabase_UpdateUser(t *testing.T) {
 	currentTime := time.Now()
 
 	tests := []struct {

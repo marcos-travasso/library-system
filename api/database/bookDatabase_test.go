@@ -83,6 +83,7 @@ func TestDatabase_InsertBook(t *testing.T) {
 	err := dbDir.clearDatabase()
 	if err != nil {
 		t.Error(err)
+		return
 	}
 
 	for _, tt := range tests {
@@ -176,6 +177,7 @@ func TestDatabase_SelectBook(t *testing.T) {
 	err := dbDir.clearDatabase()
 	if err != nil {
 		t.Error(err)
+		return
 	}
 
 	for _, tt := range tests {
@@ -390,6 +392,7 @@ func TestDatabase_DeleteBook(t *testing.T) {
 		err := dbDir.clearDatabase()
 		if err != nil {
 			t.Error(err)
+			return
 		}
 
 		for _, tt := range tests {

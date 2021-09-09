@@ -37,6 +37,7 @@ func TestDatabase_insertGenre(t *testing.T) {
 	err := dbDir.clearDatabase()
 	if err != nil {
 		t.Error(err)
+		return
 	}
 
 	for _, tt := range tests {

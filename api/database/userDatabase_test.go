@@ -45,6 +45,7 @@ func TestDatabase_InsertUser(t *testing.T) {
 	err := dbDir.clearDatabase()
 	if err != nil {
 		t.Error(err)
+		return
 	}
 
 	for _, tt := range tests {
@@ -176,6 +177,7 @@ func TestDatabase_SelectUser(t *testing.T) {
 	err := dbDir.clearDatabase()
 	if err != nil {
 		t.Error(err)
+		return
 	}
 	createdUserIDs := 0
 
@@ -300,6 +302,7 @@ func TestDatabase_SelectUsers(t *testing.T) {
 		err := dbDir.clearDatabase()
 		if err != nil {
 			t.Error(err)
+			return
 		}
 
 		for _, tt := range tests {
@@ -417,6 +420,7 @@ func TestDatabase_DeleteUser(t *testing.T) {
 		err := dbDir.clearDatabase()
 		if err != nil {
 			t.Error(err)
+			return
 		}
 
 		for _, tt := range tests {
@@ -517,6 +521,7 @@ func TestDatabase_UpdateUser(t *testing.T) {
 	err := dbDir.clearDatabase()
 	if err != nil {
 		t.Error(err)
+		return
 	}
 
 	for _, tt := range tests {

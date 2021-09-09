@@ -11,6 +11,10 @@ type entity interface {
 	SQLStatement(statementType string) (string, error)
 }
 
+type linkEntity interface {
+	LinkSQLStatement(statementType string) (string, error)
+}
+
 type Database struct {
 	Dir string
 }
@@ -87,6 +91,23 @@ func sendStatement(e entity, statementType string, db *sql.DB) error {
 	statement, err := e.SQLStatement(statementType)
 	if err != nil {
 		log.Printf("Fail to get statement: %s", err)
+		return err
+	}
+
+	_, err = db.Exec(statement)
+	if err != nil {
+		log.Printf("Fail to %s: %s", statementType, err)
+		return err
+	}
+
+	return err
+}
+
+func sendLinkStatement(e linkEntity, statementType string, db *sql.DB) error {
+
+	statement, err := e.LinkSQLStatement(statementType)
+	if err != nil {
+		log.Printf("Fail to get link statement: %s", err)
 		return err
 	}
 

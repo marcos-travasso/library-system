@@ -9,10 +9,9 @@ import (
 
 func TestInsertUser(t *testing.T) {
 	tests := []struct {
-		name    string
-		args    structs.User
-		want    int
-		wantErr bool
+		name string
+		args structs.User
+		want int
 	}{
 		{
 			name: "First user",
@@ -38,8 +37,7 @@ func TestInsertUser(t *testing.T) {
 					Complement:   "",
 				},
 			},
-			want:    1,
-			wantErr: false,
+			want: 1,
 		},
 	}
 
@@ -52,8 +50,8 @@ func TestInsertUser(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := dbDir.InsertUser(tt.args)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("InsertUser() error = %v, wantErr %v", err, tt.wantErr)
+			if err != nil {
+				t.Errorf("InsertUser() error = %v", err)
 				return
 			}
 			if got != tt.want {
@@ -69,7 +67,6 @@ func TestSelectUser(t *testing.T) {
 	tests := []struct {
 		name    string
 		args    structs.User
-		want    int
 		wantErr bool
 	}{
 		{
@@ -209,10 +206,8 @@ func TestSelectUsers(t *testing.T) {
 		currentTime := time.Now()
 
 		tests := []struct {
-			name    string
-			args    structs.User
-			want    int
-			wantErr bool
+			name string
+			args structs.User
 		}{
 			{
 				name: "First user",
@@ -300,9 +295,7 @@ func TestSelectUsers(t *testing.T) {
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
 				_, err := dbDir.InsertUser(tt.args)
-				if tt.wantErr && err != nil {
-					return
-				} else if tt.wantErr && err == nil {
+				if err != nil {
 					t.Error(err)
 				}
 			})
@@ -330,10 +323,8 @@ func TestDeleteUser(t *testing.T) {
 		currentTime := time.Now()
 
 		tests := []struct {
-			name    string
-			args    structs.User
-			want    int
-			wantErr bool
+			name string
+			args structs.User
 		}{
 			{
 				name: "First user",
@@ -420,9 +411,7 @@ func TestDeleteUser(t *testing.T) {
 
 		for _, tt := range tests {
 			_, err := dbDir.InsertUser(tt.args)
-			if tt.wantErr && err != nil {
-				return
-			} else if tt.wantErr && err == nil {
+			if err != nil {
 				t.Error(err)
 			}
 		}
@@ -435,9 +424,7 @@ func TestDeleteUser(t *testing.T) {
 		for _, tt := range tests {
 			t.Run(tt.name, func(t *testing.T) {
 				err := dbDir.DeleteUser(tt.args)
-				if tt.wantErr && err != nil {
-					return
-				} else if tt.wantErr && err == nil {
+				if err != nil {
 					t.Error(err)
 				}
 				usersCountBefore--

@@ -194,6 +194,16 @@ func TestDatabase_SelectBook(t *testing.T) {
 			}
 		})
 	}
+
+	notFound := structs.Book{ID: len(tests) + 1}
+
+	t.Run("Not found book", func(t *testing.T) {
+		got, err := dbDir.SelectBook(notFound)
+		if err == nil {
+			gotJSON, _ := json.Marshal(got)
+			t.Errorf("Found book that was not inserted, got: %v", string(gotJSON))
+		}
+	})
 }
 
 func TestDatabase_SelectBooks(t *testing.T) {

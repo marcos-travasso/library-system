@@ -199,6 +199,16 @@ func TestDatabase_SelectUser(t *testing.T) {
 			}
 		})
 	}
+
+	notFound := structs.User{ID: len(tests) + 1}
+
+	t.Run("Not found user", func(t *testing.T) {
+		got, err := dbDir.SelectUser(notFound)
+		if err == nil {
+			gotJSON, _ := json.Marshal(got)
+			t.Errorf("Found user that was not inserted, got: %v", string(gotJSON))
+		}
+	})
 }
 
 func TestDatabase_SelectUsers(t *testing.T) {

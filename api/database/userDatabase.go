@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	"github.com/marcos-travasso/library-system/api/structs"
 	"log"
 )
@@ -65,6 +66,10 @@ func (dbDir Database) SelectUser(u structs.User) (structs.User, error) {
 			log.Printf("Fail to receive user id: %s", err)
 			return user, err
 		}
+	}
+
+	if user.ID == 0 {
+		return user, errors.New("user not found")
 	}
 
 	user.CreationDate = user.CreationDate[:10]

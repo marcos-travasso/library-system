@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	"github.com/marcos-travasso/library-system/api/structs"
 	"log"
 )
@@ -89,6 +90,10 @@ func (dbDir Database) SelectBook(b structs.Book) (structs.Book, error) {
 			log.Printf("Fail to receive genre: %s", err)
 			return book, err
 		}
+	}
+
+	if book.ID == 0 {
+		return book, errors.New("book not found")
 	}
 
 	return book, nil

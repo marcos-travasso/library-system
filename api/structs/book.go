@@ -83,7 +83,7 @@ func (b Book) SQLStatement(statementType string) (string, error) {
 		if b.ID == 0 {
 			return "", errors.New("book has no ID")
 		}
-		sqlStatement += fmt.Sprintf("SELECT * FROM Livros WHERE idLivro = \"%d\"", b.ID)
+		sqlStatement += fmt.Sprintf("SELECT idLivro, titulo, ano, paginas, autor, idPessoa, nome, genero, nascimento FROM (Livros INNER JOIN Autores A on Livros.autor = A.idAutor) INNER JOIN Pessoas on pessoa = Pessoas.idPessoa WHERE idLivro = \"%d\"", b.ID)
 	default:
 		return "", errors.New("invalid statement type")
 	}
@@ -111,7 +111,7 @@ func (b Book) LinkSQLStatement(statementType string) (string, error) {
 	case "DELETE":
 		sqlStatement += fmt.Sprintf("DELETE FROM generos_dos_livros WHERE livro = \"%d\"", b.ID)
 	case "SELECT":
-		sqlStatement += fmt.Sprintf("SELECT * FROM generos_dos_livros WHERE livro = \"%d\"", b.ID)
+		sqlStatement += fmt.Sprintf("SELECT idGenero, nome FROM generos_dos_livros INNER JOIN Generos on generos_dos_livros.genero = Generos.idGenero WHERE livro = \"%d\"", b.ID)
 	default:
 		return "", errors.New("invalid statement type")
 	}

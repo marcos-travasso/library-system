@@ -430,3 +430,87 @@ func TestDatabase_DeleteBook(t *testing.T) {
 		}
 	}
 }
+
+func TestDatabase_UpdateBook(t *testing.T) {
+	tests := []struct {
+		name       string
+		argsBefore structs.Book
+		argsAfter  structs.Book
+	}{
+		{
+			name: "Insert book",
+			argsBefore: structs.Book{
+				ID:    1,
+				Year:  1977,
+				Pages: 90,
+				Title: "A hora da estrela",
+				Author: structs.Author{
+					ID: 1,
+					Person: structs.Person{
+						ID:       1,
+						Name:     "Clarice Lispector",
+						Gender:   "F",
+						Birthday: "10/12/1920",
+					},
+				},
+				Genre: structs.Genre{
+					ID:   1,
+					Name: "Romance",
+				},
+			},
+			argsAfter: structs.Book{
+				ID:    1,
+				Year:  1967,
+				Pages: 91,
+				Title: "Hora da estrela",
+				Author: structs.Author{
+					ID: 1,
+					Person: structs.Person{
+						ID:       1,
+						Name:     "Clarice Lispector",
+						Gender:   "F",
+						Birthday: "10/12/1920",
+					},
+				},
+				Genre: structs.Genre{
+					ID:   2,
+					Name: "Romanc",
+				},
+			},
+		},
+	}
+
+	dbDir := Database{Dir: "./temp/test_bookUpdate.db"}
+	err := dbDir.clearDatabase()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	for _, tt := range tests {
+		_, err := dbDir.InsertBook(tt.argsBefore)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+
+		err = dbDir.UpdateBook(tt.argsAfter)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+
+		createdBook, err := dbDir.SelectBook(tt.argsAfter)
+		if err != nil {
+			t.Error(err)
+			return
+		}
+
+		if createdBook != tt.argsAfter {
+			gotJSON, _ := json.Marshal(createdBook)
+			wantJSON, _ := json.Marshal(tt.argsAfter)
+
+			t.Errorf("UpdateBook() got = %v, want %v", string(gotJSON), string(wantJSON))
+		}
+	}
+}

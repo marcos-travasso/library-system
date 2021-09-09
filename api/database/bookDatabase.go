@@ -170,3 +170,37 @@ func (dbDir Database) DeleteBook(b structs.Book) error {
 
 	return nil
 }
+
+func (dbDir Database) UpdateBook(b structs.Book) error {
+	var db = initializeDatabase(dbDir)
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Printf("Error to close database: %v", err)
+		}
+	}(db)
+
+	authorID, err := dbDir.InsertAuthor(b.Author)
+	if err != nil {
+		return err
+	}
+	b.Author.ID = authorID
+
+	genreID, err := dbDir.insertGenre(b.Genre)
+	if err != nil {
+		return err
+	}
+	b.Genre.ID = genreID
+
+	err = sendLinkStatement(b, "UPDATE", db)
+	if err != nil {
+		return err
+	}
+
+	err = sendStatement(b, "UPDATE", db)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

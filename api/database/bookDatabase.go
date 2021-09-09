@@ -180,12 +180,6 @@ func (dbDir Database) UpdateBook(b structs.Book) error {
 		}
 	}(db)
 
-	authorID, err := dbDir.InsertAuthor(b.Author)
-	if err != nil {
-		return err
-	}
-	b.Author.ID = authorID
-
 	genreID, err := dbDir.insertGenre(b.Genre)
 	if err != nil {
 		return err

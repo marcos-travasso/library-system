@@ -46,6 +46,11 @@ func (g Genre) SQLStatement(statementType string) (string, error) {
 			return "", errors.New("genre has no ID")
 		}
 		sqlStatement += fmt.Sprintf("SELECT * FROM Generos WHERE idGenero = \"%d\"", g.ID)
+	case "EXIST":
+		if g.Name == "" {
+			return "", errors.New("genre has no name")
+		}
+		sqlStatement += fmt.Sprintf("SELECT * FROM Generos WHERE nome = \"%s\"", g.Name)
 	default:
 		return "", errors.New("invalid statement type")
 	}

@@ -439,7 +439,7 @@ func TestDatabase_DeleteUser(t *testing.T) {
 			}
 
 			if countAfter != usersCountBefore {
-				t.Errorf("Count users got = %d, want %d in %s", countAfter, usersCountBefore, column)
+				t.Errorf("Count users got = %d expect = %d", countAfter, usersCountBefore)
 			}
 		}
 	}

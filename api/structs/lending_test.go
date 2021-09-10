@@ -10,10 +10,16 @@ func TestLending_LendingStatement(t *testing.T) {
 	}{
 		{name: "One lending",
 			args: Lending{
-				ID:       1,
-				User:     User{ID: 2},
-				Book:     Book{ID: 3},
-				LendDay:  "01/01/2000",
+				ID:      1,
+				User:    User{ID: 2},
+				Book:    Book{ID: 3},
+				LendDay: "01/01/2000",
+				Devolution: []Devolution{
+					{
+						ID:   1,
+						Date: "02/01/200",
+					},
+				},
 				Returned: 0,
 			},
 			wantedStatements: map[string]string{
@@ -26,10 +32,16 @@ func TestLending_LendingStatement(t *testing.T) {
 		},
 		{name: "Empty id",
 			args: Lending{
-				ID:       0,
-				User:     User{ID: 2},
-				Book:     Book{ID: 3},
-				LendDay:  "01/01/2000",
+				ID:      0,
+				User:    User{ID: 2},
+				Book:    Book{ID: 3},
+				LendDay: "01/01/2000",
+				Devolution: []Devolution{
+					{
+						ID:   1,
+						Date: "02/01/200",
+					},
+				},
 				Returned: 0,
 			},
 			wantedStatements: map[string]string{
@@ -42,10 +54,16 @@ func TestLending_LendingStatement(t *testing.T) {
 		},
 		{name: "Empty user id",
 			args: Lending{
-				ID:       1,
-				User:     User{ID: 0},
-				Book:     Book{ID: 3},
-				LendDay:  "01/01/2000",
+				ID:      1,
+				User:    User{ID: 0},
+				Book:    Book{ID: 3},
+				LendDay: "01/01/2000",
+				Devolution: []Devolution{
+					{
+						ID:   1,
+						Date: "03/01/200",
+					},
+				},
 				Returned: 0,
 			},
 			wantedStatements: map[string]string{
@@ -58,10 +76,16 @@ func TestLending_LendingStatement(t *testing.T) {
 		},
 		{name: "Empty book id",
 			args: Lending{
-				ID:       1,
-				User:     User{ID: 2},
-				Book:     Book{ID: 0},
-				LendDay:  "01/01/2000",
+				ID:      1,
+				User:    User{ID: 2},
+				Book:    Book{ID: 0},
+				LendDay: "01/01/2000",
+				Devolution: []Devolution{
+					{
+						ID:   2,
+						Date: "02/01/200",
+					},
+				},
 				Returned: 0,
 			},
 			wantedStatements: map[string]string{
@@ -94,6 +118,22 @@ func TestLending_LendingStatement(t *testing.T) {
 				"UPDATE": "",
 				"DELETE": "",
 				"SELECT": "",
+				"TEST":   "",
+			},
+		},
+		{name: "Lending without devolution",
+			args: Lending{
+				ID:       1,
+				User:     User{ID: 2},
+				Book:     Book{ID: 3},
+				LendDay:  "01/01/2000",
+				Returned: 0,
+			},
+			wantedStatements: map[string]string{
+				"INSERT": "",
+				"UPDATE": "UPDATE Emprestimos SET livro=\"3\" usuario=\"2\" devolvido=\"0\" WHERE idEmprestimo = \"1\"",
+				"DELETE": "DELETE FROM Emprestimos WHERE idEmprestimo = \"1\"",
+				"SELECT": "SELECT * FROM Emprestimos WHERE idEmprestimo = \"1\"",
 				"TEST":   "",
 			},
 		},
@@ -114,7 +154,6 @@ func TestLending_InsertDevolutionStatement(t *testing.T) {
 	tests := []struct {
 		name   string
 		arg1   Lending
-		arg2   Devolution
 		wanted string
 	}{
 		{name: "One devolution",
@@ -124,10 +163,12 @@ func TestLending_InsertDevolutionStatement(t *testing.T) {
 				Book:     Book{ID: 3},
 				LendDay:  "01/01/2000",
 				Returned: 0,
-			},
-			arg2: Devolution{
-				ID:   1,
-				Date: "01/01/2000",
+				Devolution: []Devolution{
+					{
+						ID:   1,
+						Date: "01/01/2000",
+					},
+				},
 			},
 			wanted: "INSERT INTO devolucoes(emprestimo, datadedevolucao) values (\"1\", \"01/01/2000\")",
 		},
@@ -138,10 +179,12 @@ func TestLending_InsertDevolutionStatement(t *testing.T) {
 				Book:     Book{ID: 3},
 				LendDay:  "01/01/2000",
 				Returned: 0,
-			},
-			arg2: Devolution{
-				ID:   1,
-				Date: "01/01/2000",
+				Devolution: []Devolution{
+					{
+						ID:   1,
+						Date: "01/01/2000",
+					},
+				},
 			},
 			wanted: "",
 		},
@@ -152,10 +195,12 @@ func TestLending_InsertDevolutionStatement(t *testing.T) {
 				Book:     Book{ID: 3},
 				LendDay:  "01/01/2000",
 				Returned: 0,
-			},
-			arg2: Devolution{
-				ID:   1,
-				Date: "",
+				Devolution: []Devolution{
+					{
+						ID:   1,
+						Date: "",
+					},
+				},
 			},
 			wanted: "",
 		},
@@ -166,10 +211,12 @@ func TestLending_InsertDevolutionStatement(t *testing.T) {
 				Book:     Book{ID: 0},
 				LendDay:  "",
 				Returned: 0,
-			},
-			arg2: Devolution{
-				ID:   0,
-				Date: "",
+				Devolution: []Devolution{
+					{
+						ID:   0,
+						Date: "",
+					},
+				},
 			},
 			wanted: "",
 		},
@@ -180,7 +227,7 @@ func TestLending_InsertDevolutionStatement(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got, _ := tt.arg1.InsertDevolutionStatement(tt.arg2); got != tt.wanted {
+			if got, _ := tt.arg1.LinkSQLStatement("INSERT"); got != tt.wanted {
 				t.Errorf("%s statement got = %v, expect = %v", tt.name, got, tt.wanted)
 			}
 		})
@@ -231,7 +278,7 @@ func TestLending_SelectDevolutionStatement(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got, _ := tt.arg1.SelectDevolutionStatement(); got != tt.wanted {
+			if got, _ := tt.arg1.LinkSQLStatement("SELECT"); got != tt.wanted {
 				t.Errorf("%s statement got = %v, expect = %v", tt.name, got, tt.wanted)
 			}
 		})

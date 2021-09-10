@@ -30,6 +30,9 @@ func (l Lending) SQLStatement(statementType string) (string, error) {
 		if l.User.ID == 0 {
 			return "", errors.New("user has no ID")
 		}
+		if len(l.Devolution) == 0 {
+			return "", errors.New("lending has no devolution")
+		}
 		sqlStatement += fmt.Sprintf("INSERT INTO emprestimos(livro, usuario, datadopedido) values (\"%d\", \"%d\", \"%s\")", l.Book.ID, l.User.ID, l.LendDay)
 	case "UPDATE":
 		if l.ID == 0 {
@@ -58,23 +61,27 @@ func (l Lending) SQLStatement(statementType string) (string, error) {
 	return sqlStatement, nil
 }
 
-func (l Lending) InsertDevolutionStatement(d Devolution) (string, error) {
-	sqlStatement := ""
+func (l Lending) LinkSQLStatement(statementType string) (string, error) {
 	if l.ID == 0 {
 		return "", errors.New("lending has no id")
 	}
-	if d.Date == "" {
-		return "", errors.New("devolution has no date")
-	}
-	sqlStatement += fmt.Sprintf("INSERT INTO devolucoes(emprestimo, datadedevolucao) values (\"%d\", \"%s\")", l.ID, d.Date)
-	return sqlStatement, nil
-}
 
-func (l Lending) SelectDevolutionStatement() (string, error) {
 	sqlStatement := ""
-	if l.ID == 0 {
-		return "", errors.New("lending has no id")
+
+	switch statementType {
+	case "INSERT":
+		if len(l.Devolution) == 0 {
+			return "", errors.New("lending has no devolution")
+		}
+		if l.Devolution[0].Date == "" {
+			return "", errors.New("devolution has no date")
+		}
+		sqlStatement += fmt.Sprintf("INSERT INTO devolucoes(emprestimo, datadedevolucao) values (\"%d\", \"%s\")", l.ID, l.Devolution[0].Date)
+	case "SELECT":
+		sqlStatement += fmt.Sprintf("SELECT * FROM devolucoes WHERE emprestimo = \"%d\"", l.ID)
+	default:
+		return "", errors.New("invalid statement type")
 	}
-	sqlStatement += fmt.Sprintf("SELECT * FROM devolucoes WHERE emprestimo = \"%d\"", l.ID)
+
 	return sqlStatement, nil
 }

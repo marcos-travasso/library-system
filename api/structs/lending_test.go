@@ -233,7 +233,7 @@ func TestLending_SelectDevolutionStatement(t *testing.T) {
 				LendDay:  "01/01/2000",
 				Returned: 0,
 			},
-			wanted: "SELECT * FROM devolucoes WHERE emprestimo = \"1\"",
+			wanted: "SELECT idDevolucao, dataDeDevolucao FROM devolucoes WHERE emprestimo = \"1\"",
 		},
 		{name: "Empty lending id",
 			arg1: Lending{

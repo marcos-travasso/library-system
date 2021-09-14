@@ -75,7 +75,7 @@ func (l Lending) LinkSQLStatement(statementType string) (string, error) {
 		}
 		sqlStatement += fmt.Sprintf("INSERT INTO devolucoes(emprestimo, datadedevolucao) values (\"%d\", \"%s\")", l.ID, l.Devolution.Date)
 	case "SELECT":
-		sqlStatement += fmt.Sprintf("SELECT * FROM devolucoes WHERE emprestimo = \"%d\"", l.ID)
+		sqlStatement += fmt.Sprintf("SELECT idDevolucao, dataDeDevolucao FROM devolucoes WHERE emprestimo = \"%d\"", l.ID)
 	default:
 		return "", errors.New("invalid statement type")
 	}

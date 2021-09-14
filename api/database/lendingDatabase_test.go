@@ -354,3 +354,71 @@ func TestDatabase_SelectLendings(t *testing.T) {
 		}
 	})
 }
+
+func TestDatabase_ReturnBook(t *testing.T) {
+	currentTime := time.Now()
+
+	dbDir := Database{Dir: "./temp/test_lendingReturn.db"}
+	err := dbDir.clearDatabase()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	for _, tt := range usersTests {
+		tt.args.ID, err = dbDir.InsertUser(tt.args)
+		if err != nil {
+			t.Error(err)
+		}
+	}
+
+	for _, tt := range booksTests {
+		tt.args.ID, err = dbDir.InsertBook(tt.args)
+		if err != nil {
+			t.Error(err)
+		}
+	}
+
+	isLending, err := dbDir.isLending(booksTests[0].args)
+	if err != nil {
+		t.Error(err)
+	}
+	if isLending {
+		t.Error("book is already lending")
+	}
+
+	lending := structs.Lending{
+		User:    usersTests[0].args,
+		Book:    booksTests[0].args,
+		LendDay: currentTime.Format("2006-01-02"),
+		Devolution: structs.Devolution{
+			ID:   1,
+			Date: "31/10/2021",
+		},
+	}
+	lending.ID, err = dbDir.InsertLending(lending)
+	if err != nil {
+		t.Error(err)
+	}
+
+	isLending, err = dbDir.isLending(booksTests[0].args)
+	if err != nil {
+		t.Error(err)
+	}
+	if !isLending {
+		t.Error("book is not lending")
+	}
+
+	err = dbDir.ReturnBook(lending)
+	if err != nil {
+		t.Error(err)
+	}
+
+	isLending, err = dbDir.isLending(booksTests[0].args)
+	if err != nil {
+		t.Error(err)
+	}
+	if isLending {
+		t.Error("book is lending")
+	}
+}

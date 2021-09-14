@@ -133,6 +133,28 @@ func (dbDir Database) SelectLendings(e entityID) ([]structs.Lending, error) {
 	return lendings, nil
 }
 
+func (dbDir Database) ReturnBook(l structs.Lending) error {
+	if l.ID == 0 {
+		return errors.New("lending has no id")
+	}
+
+	var db = initializeDatabase(dbDir)
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Printf("Error to close database: %v", err)
+		}
+	}(db)
+
+	_, err := db.Exec(fmt.Sprintf("UPDATE emprestimos SET devolvido = 1 WHERE idemprestimo = %d", l.ID))
+	if err != nil {
+		log.Printf("Fail to return book: %s", err)
+		return err
+	}
+
+	return nil
+}
+
 func (dbDir *Database) haveLending(u structs.User) (bool, error) {
 	var db = initializeDatabase(*dbDir)
 	defer func(db *sql.DB) {

@@ -14,11 +14,9 @@ func TestLending_LendingStatement(t *testing.T) {
 				User:    User{ID: 2},
 				Book:    Book{ID: 3},
 				LendDay: "01/01/2000",
-				Devolution: []Devolution{
-					{
-						ID:   1,
-						Date: "02/01/200",
-					},
+				Devolution: Devolution{
+					ID:   1,
+					Date: "02/01/200",
 				},
 				Returned: 0,
 			},
@@ -36,11 +34,9 @@ func TestLending_LendingStatement(t *testing.T) {
 				User:    User{ID: 2},
 				Book:    Book{ID: 3},
 				LendDay: "01/01/2000",
-				Devolution: []Devolution{
-					{
-						ID:   1,
-						Date: "02/01/200",
-					},
+				Devolution: Devolution{
+					ID:   1,
+					Date: "02/01/2000",
 				},
 				Returned: 0,
 			},
@@ -58,11 +54,9 @@ func TestLending_LendingStatement(t *testing.T) {
 				User:    User{ID: 0},
 				Book:    Book{ID: 3},
 				LendDay: "01/01/2000",
-				Devolution: []Devolution{
-					{
-						ID:   1,
-						Date: "03/01/200",
-					},
+				Devolution: Devolution{
+					ID:   1,
+					Date: "03/01/200",
 				},
 				Returned: 0,
 			},
@@ -80,11 +74,9 @@ func TestLending_LendingStatement(t *testing.T) {
 				User:    User{ID: 2},
 				Book:    Book{ID: 0},
 				LendDay: "01/01/2000",
-				Devolution: []Devolution{
-					{
-						ID:   2,
-						Date: "02/01/200",
-					},
+				Devolution: Devolution{
+					ID:   2,
+					Date: "02/01/200",
 				},
 				Returned: 0,
 			},
@@ -163,11 +155,9 @@ func TestLending_InsertDevolutionStatement(t *testing.T) {
 				Book:     Book{ID: 3},
 				LendDay:  "01/01/2000",
 				Returned: 0,
-				Devolution: []Devolution{
-					{
-						ID:   1,
-						Date: "01/01/2000",
-					},
+				Devolution: Devolution{
+					ID:   1,
+					Date: "01/01/2000",
 				},
 			},
 			wanted: "INSERT INTO devolucoes(emprestimo, datadedevolucao) values (\"1\", \"01/01/2000\")",
@@ -179,11 +169,9 @@ func TestLending_InsertDevolutionStatement(t *testing.T) {
 				Book:     Book{ID: 3},
 				LendDay:  "01/01/2000",
 				Returned: 0,
-				Devolution: []Devolution{
-					{
-						ID:   1,
-						Date: "01/01/2000",
-					},
+				Devolution: Devolution{
+					ID:   1,
+					Date: "01/01/2000",
 				},
 			},
 			wanted: "",
@@ -195,11 +183,9 @@ func TestLending_InsertDevolutionStatement(t *testing.T) {
 				Book:     Book{ID: 3},
 				LendDay:  "01/01/2000",
 				Returned: 0,
-				Devolution: []Devolution{
-					{
-						ID:   1,
-						Date: "",
-					},
+				Devolution: Devolution{
+					ID:   1,
+					Date: "",
 				},
 			},
 			wanted: "",
@@ -211,11 +197,9 @@ func TestLending_InsertDevolutionStatement(t *testing.T) {
 				Book:     Book{ID: 0},
 				LendDay:  "",
 				Returned: 0,
-				Devolution: []Devolution{
-					{
-						ID:   0,
-						Date: "",
-					},
+				Devolution: Devolution{
+					ID:   0,
+					Date: "",
 				},
 			},
 			wanted: "",

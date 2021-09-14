@@ -6,12 +6,12 @@ import (
 )
 
 type Lending struct {
-	ID         int          `json:"id"`
-	User       User         `json:"user"`
-	Book       Book         `json:"book"`
-	LendDay    string       `json:"lendDay"`
-	Returned   int          `json:"returned"`
-	Devolution []Devolution `json:"devolution"`
+	ID         int        `json:"id"`
+	User       User       `json:"user"`
+	Book       Book       `json:"book"`
+	LendDay    string     `json:"lendDay"`
+	Returned   int        `json:"returned"`
+	Devolution Devolution `json:"devolution"`
 }
 
 type Devolution struct {
@@ -30,7 +30,7 @@ func (l Lending) SQLStatement(statementType string) (string, error) {
 		if l.User.ID == 0 {
 			return "", errors.New("user has no ID")
 		}
-		if len(l.Devolution) == 0 {
+		if l.Devolution.Date == "" {
 			return "", errors.New("lending has no devolution")
 		}
 		sqlStatement += fmt.Sprintf("INSERT INTO emprestimos(livro, usuario, datadopedido) values (\"%d\", \"%d\", \"%s\")", l.Book.ID, l.User.ID, l.LendDay)
@@ -70,13 +70,10 @@ func (l Lending) LinkSQLStatement(statementType string) (string, error) {
 
 	switch statementType {
 	case "INSERT":
-		if len(l.Devolution) == 0 {
-			return "", errors.New("lending has no devolution")
-		}
-		if l.Devolution[0].Date == "" {
+		if l.Devolution.Date == "" {
 			return "", errors.New("devolution has no date")
 		}
-		sqlStatement += fmt.Sprintf("INSERT INTO devolucoes(emprestimo, datadedevolucao) values (\"%d\", \"%s\")", l.ID, l.Devolution[0].Date)
+		sqlStatement += fmt.Sprintf("INSERT INTO devolucoes(emprestimo, datadedevolucao) values (\"%d\", \"%s\")", l.ID, l.Devolution.Date)
 	case "SELECT":
 		sqlStatement += fmt.Sprintf("SELECT * FROM devolucoes WHERE emprestimo = \"%d\"", l.ID)
 	default:

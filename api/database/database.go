@@ -11,6 +11,10 @@ type entity interface {
 	SQLStatement(statementType string) (string, error)
 }
 
+type entityID interface {
+	GetIDString() string
+}
+
 type linkEntity interface {
 	LinkSQLStatement(statementType string) (string, error)
 }

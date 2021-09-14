@@ -49,3 +49,7 @@ func (u User) SQLStatement(statementType string) (string, error) {
 	}
 	return sqlStatement, nil
 }
+
+func (u User) GetIDString() string {
+	return fmt.Sprintf("usuario = %d", u.ID)
+}

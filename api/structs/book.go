@@ -135,3 +135,7 @@ func (g Genre) LinkSQLStatement(statementType string) (string, error) {
 	}
 	return sqlStatement, nil
 }
+
+func (b Book) GetIDString() string {
+	return fmt.Sprintf("livro = %d", b.ID)
+}

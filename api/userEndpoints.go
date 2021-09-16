@@ -28,7 +28,7 @@ func postUser(c *gin.Context) {
 			log.Printf("%s", err)
 			log.Printf("%s", gotJSON)
 
-			c.String(http.StatusBadRequest, "Failed to insert user")
+			c.String(http.StatusBadRequest, err.Error())
 			return
 		}
 
@@ -38,14 +38,14 @@ func postUser(c *gin.Context) {
 		return
 	}
 
-	c.String(http.StatusBadRequest, "Fail to parse JSON")
+	c.String(http.StatusBadRequest, "failed to parse JSON")
 }
 
 func getUsers(c *gin.Context) {
 	users, err := dbDir.SelectUsers()
 	if err != nil {
 		log.Printf("%s", err)
-		c.String(http.StatusInternalServerError, "Failed to select users")
+		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
 	c.IndentedJSON(http.StatusOK, users)
@@ -55,7 +55,7 @@ func deleteUser(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		log.Printf("%s", err)
-		c.String(http.StatusBadRequest, "Fail to receive ID")
+		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
 	receivedUser := structs.User{ID: id}
@@ -66,7 +66,7 @@ func deleteUser(c *gin.Context) {
 		log.Printf("%s", err)
 		log.Printf("%s", gotJSON)
 
-		c.String(http.StatusBadRequest, "Failed to delete user")
+		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -77,7 +77,7 @@ func getUser(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		log.Printf("%s", err)
-		c.String(http.StatusBadRequest, "Fail to receive ID")
+		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
 	receivedUser := structs.User{ID: id}
@@ -85,7 +85,7 @@ func getUser(c *gin.Context) {
 	user, err := dbDir.SelectUser(receivedUser)
 	if err != nil {
 		log.Printf("%s", err)
-		c.String(http.StatusInternalServerError, "Failed to select user")
+		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
 
@@ -102,7 +102,7 @@ func updateUser(c *gin.Context) {
 			log.Printf("%s", err)
 			log.Printf("%s", gotJSON)
 
-			c.String(http.StatusBadRequest, "Failed to update user")
+			c.String(http.StatusBadRequest, err.Error())
 			return
 		}
 

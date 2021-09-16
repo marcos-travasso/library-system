@@ -28,17 +28,22 @@ func (dbDir Database) InsertBook(b structs.Book) (int, error) {
 	}
 	b.Genre.ID = genreID
 
-	err = sendLinkStatement(b, "INSERT", db)
-	if err != nil {
-		return 0, err
-	}
-
 	err = sendStatement(b, "INSERT", db)
 	if err != nil {
 		return 0, err
 	}
 
-	return dbDir.getLastID("Livros", "idLivro")
+	b.ID, err = dbDir.getLastID("Livros", "idLivro")
+	if err != nil {
+		return 0, err
+	}
+
+	err = sendLinkStatement(b, "INSERT", db)
+	if err != nil {
+		return 0, err
+	}
+
+	return b.ID, err
 }
 
 func (dbDir Database) SelectBook(b structs.Book) (structs.Book, error) {
@@ -179,6 +184,12 @@ func (dbDir Database) UpdateBook(b structs.Book) error {
 			log.Printf("Error to close database: %v", err)
 		}
 	}(db)
+
+	authorID, err := dbDir.InsertAuthor(b.Author)
+	if err != nil {
+		return err
+	}
+	b.Author.ID = authorID
 
 	genreID, err := dbDir.insertGenre(b.Genre)
 	if err != nil {

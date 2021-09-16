@@ -25,15 +25,10 @@ func (a Author) SQLStatement(statementType string) (string, error) {
 		}
 		sqlStatement += fmt.Sprintf("DELETE FROM Autores WHERE idAutor = \"%d\"", a.ID)
 	case "SELECT":
-		if a.ID == 0 {
-			return "", errors.New("author has no ID")
-		}
-		sqlStatement += fmt.Sprintf("SELECT * FROM Autores WHERE idAutor = \"%d\"", a.ID)
-	case "EXIST":
 		if a.Person.Name == "" {
 			return "", errors.New("author has no name")
 		}
-		sqlStatement += fmt.Sprintf("SELECT * FROM Autores INNER JOIN Pessoas ON Pessoas.idPessoa = Autores.pessoa WHERE nome = \"%s\"", a.Person.Name)
+		sqlStatement += fmt.Sprintf("SELECT idAutor, nome FROM Autores INNER JOIN Pessoas ON Pessoas.idPessoa = Autores.pessoa WHERE nome = \"%s\"", a.Person.Name)
 	default:
 		return "", errors.New("invalid statement type")
 	}

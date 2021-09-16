@@ -10,7 +10,7 @@ import (
 	"strconv"
 )
 
-func setupUserFunctions() {
+func setupUserEndpoints() {
 	router.POST("/users", postUser)
 	router.GET("/users", getUsers)
 	router.GET("/users/:id", getUser)

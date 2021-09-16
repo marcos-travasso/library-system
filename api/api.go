@@ -28,7 +28,7 @@ func main() {
 func setupRoutes() {
 	router = gin.Default()
 
-	setupUserFunctions()
+	setupUserEndpoints()
 
 	_ = router.Run(":8080")
 }

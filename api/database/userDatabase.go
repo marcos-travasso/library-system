@@ -121,7 +121,12 @@ func (dbDir Database) DeleteUser(u structs.User) error {
 		}
 	}(db)
 
-	err := sendStatement(u, "DELETE", db)
+	u, err := dbDir.SelectUser(u)
+	if err != nil {
+		return err
+	}
+
+	err = sendStatement(u, "DELETE", db)
 	if err != nil {
 		return err
 	}
@@ -148,7 +153,14 @@ func (dbDir Database) UpdateUser(u structs.User) error {
 		}
 	}(db)
 
-	err := sendStatement(u, "UPDATE", db)
+	userIDs, err := dbDir.SelectUser(u)
+	if err != nil {
+		return err
+	}
+	u.Person.ID = userIDs.Person.ID
+	u.Address.ID = userIDs.Address.ID
+
+	err = sendStatement(u, "UPDATE", db)
 	if err != nil {
 		return err
 	}

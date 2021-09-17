@@ -303,7 +303,7 @@ func TestDatabase_SelectLendings(t *testing.T) {
 	}
 
 	t.Run("User devolution", func(t *testing.T) {
-		userLendings, err := dbDir.SelectLendings(usersTests[0].args)
+		userLendings, err := dbDir.SelectLendings()
 
 		userLendings[0].User, err = dbDir.SelectUser(userLendings[0].User)
 		if err != nil {
@@ -320,7 +320,7 @@ func TestDatabase_SelectLendings(t *testing.T) {
 		if userLendings[0] != wanted[0].wantedLending {
 			wantedJSON, _ := json.Marshal(wanted[0].wantedLending)
 			gotJSON, _ := json.Marshal(userLendings[0])
-			fmt.Printf("wanted = %s, got = %s", wantedJSON, gotJSON)
+			t.Errorf("wanted = %s, got = %s", wantedJSON, gotJSON)
 		}
 
 		if err != nil {
@@ -329,7 +329,7 @@ func TestDatabase_SelectLendings(t *testing.T) {
 	})
 
 	t.Run("Book devolution", func(t *testing.T) {
-		bookLendings, err := dbDir.SelectLendings(booksTests[0].args)
+		bookLendings, err := dbDir.SelectLendings()
 
 		bookLendings[0].User, err = dbDir.SelectUser(bookLendings[0].User)
 		if err != nil {
@@ -346,7 +346,7 @@ func TestDatabase_SelectLendings(t *testing.T) {
 		if bookLendings[0] != wanted[0].wantedLending {
 			wantedJSON, _ := json.Marshal(wanted[0].wantedLending)
 			gotJSON, _ := json.Marshal(bookLendings[0])
-			fmt.Printf("wanted = %s, got = %s", wantedJSON, gotJSON)
+			t.Errorf("wanted = %s, got = %s", wantedJSON, gotJSON)
 		}
 
 		if err != nil {

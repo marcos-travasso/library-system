@@ -30,6 +30,7 @@ func setupRoutes() {
 
 	setupUserEndpoints()
 	setupBookEndpoints()
+	setupLendingEndpoints()
 
 	_ = router.Run(":8080")
 }

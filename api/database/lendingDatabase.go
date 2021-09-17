@@ -51,7 +51,7 @@ func (dbDir Database) InsertLending(l structs.Lending) (int, error) {
 	return l.ID, nil
 }
 
-func (dbDir Database) SelectLendings(e entityID) ([]structs.Lending, error) {
+func (dbDir Database) SelectLending(l structs.Lending) (structs.Lending, error) {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()
@@ -60,7 +60,59 @@ func (dbDir Database) SelectLendings(e entityID) ([]structs.Lending, error) {
 		}
 	}(db)
 
-	rows, err := db.Query("SELECT COUNT(*) FROM emprestimos WHERE " + e.GetIDString())
+	rows, err := db.Query(fmt.Sprintf("SELECT livro, usuario, dataDoPedido, devolvido from emprestimos WHERE idEmprestimo = %d", l.ID))
+	if err != nil {
+		log.Printf("Fail to query lending: %s", err)
+		return l, err
+	}
+
+	for i := 0; rows.Next(); i++ {
+		err = rows.Scan(&l.Book.ID, &l.User.ID, &l.LendDay, &l.Returned)
+		if err != nil {
+			log.Printf("Fail to receive lending: %s", err)
+			return l, err
+		}
+	}
+
+	if l.Book.ID == 0 {
+		return l, errors.New("no lending was found with this ID")
+	}
+
+	l.Book, err = dbDir.SelectBook(l.Book)
+	if err != nil {
+		log.Printf("Fail to query book from lending: %s", err)
+		return l, err
+	}
+
+	l.User, err = dbDir.SelectUser(l.User)
+	if err != nil {
+		log.Printf("Fail to query user from lending: %s", err)
+		return l, err
+	}
+
+	rows, err = db.Query(l.LinkSQLStatement("SELECT"))
+
+	for rows.Next() {
+		err = rows.Scan(&l.Devolution.ID, &l.Devolution.Date)
+		if err != nil {
+			log.Printf("Fail to receive devolution: %s", err)
+			return l, err
+		}
+	}
+
+	return l, nil
+}
+
+func (dbDir Database) SelectLendings() ([]structs.Lending, error) {
+	var db = initializeDatabase(dbDir)
+	defer func(db *sql.DB) {
+		err := db.Close()
+		if err != nil {
+			log.Printf("Error to close database: %v", err)
+		}
+	}(db)
+
+	rows, err := db.Query("SELECT COUNT(*) FROM emprestimos")
 	if err != nil {
 		log.Printf("Fail to count: %s", err)
 		return nil, err
@@ -77,52 +129,37 @@ func (dbDir Database) SelectLendings(e entityID) ([]structs.Lending, error) {
 
 	lendings := make([]structs.Lending, lendingCount, lendingCount)
 
-	rows, err = db.Query("SELECT idEmprestimo, livro, usuario, dataDoPedido from emprestimos where " + e.GetIDString())
+	rows, err = db.Query("SELECT idEmprestimo, livro, usuario, dataDoPedido, devolvido from emprestimos")
 	if err != nil {
 		log.Printf("Fail to query lendings: %s", err)
 		return nil, err
 	}
 
 	for i := 0; rows.Next(); i++ {
-		err = rows.Scan(&lendings[i].ID, &lendings[i].Book.ID, &lendings[i].User.ID, &lendings[i].LendDay)
+		err = rows.Scan(&lendings[i].ID, &lendings[i].Book.ID, &lendings[i].User.ID, &lendings[i].LendDay, &lendings[i].Returned)
 		if err != nil {
 			log.Printf("Fail to receive lendings: %s", err)
 			return nil, err
 		}
 	}
 
-	for _, lending := range lendings {
-		lending.Book, err = dbDir.SelectBook(lending.Book)
+	for i := range lendings {
+		lendings[i].Book, err = dbDir.SelectBook(lendings[i].Book)
 		if err != nil {
 			log.Printf("Fail to query book from lending: %s", err)
 			return nil, err
 		}
 
-		lending.User, err = dbDir.SelectUser(lending.User)
+		lendings[i].User, err = dbDir.SelectUser(lendings[i].User)
 		if err != nil {
 			log.Printf("Fail to query user from lending: %s", err)
 			return nil, err
 		}
 
-		rows, err = db.Query(fmt.Sprintf("SELECT COUNT(*) FROM devolucoes WHERE emprestimo = %d", lending.ID))
-		if err != nil {
-			log.Printf("Fail to count: %s", err)
-			return nil, err
-		}
-
-		devolutionCount := 0
-		for rows.Next() {
-			err = rows.Scan(&devolutionCount)
-			if err != nil {
-				log.Printf("Fail to receive count: %s", err)
-				return nil, err
-			}
-		}
-
-		rows, err = db.Query(lending.LinkSQLStatement("SELECT"))
+		rows, err = db.Query(lendings[i].LinkSQLStatement("SELECT"))
 
 		for rows.Next() {
-			err = rows.Scan(&lending.Devolution.ID, &lending.Devolution.Date)
+			err = rows.Scan(&lendings[i].Devolution.ID, &lendings[i].Devolution.Date)
 			if err != nil {
 				log.Printf("Fail to receive devolution: %s", err)
 				return nil, err
@@ -146,7 +183,7 @@ func (dbDir Database) ReturnBook(l structs.Lending) error {
 		}
 	}(db)
 
-	_, err := db.Exec(fmt.Sprintf("UPDATE emprestimos SET devolvido = 1 WHERE idemprestimo = %d", l.ID))
+	_, err := db.Exec(fmt.Sprintf("UPDATE emprestimos SET devolvido = 1 WHERE idEmprestimo = %d", l.ID))
 	if err != nil {
 		log.Printf("Fail to return book: %s", err)
 		return err

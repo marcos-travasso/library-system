@@ -50,9 +50,5 @@ func (dbDir Database) updatePerson(p structs.Person) error {
 	}(db)
 
 	err := sendStatement(p, "UPDATE", db)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }

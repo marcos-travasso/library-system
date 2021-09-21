@@ -25,8 +25,8 @@ func postBook(c *gin.Context) {
 		id, err := dbDir.InsertBook(book)
 		if err != nil {
 			gotJSON, _ := json.Marshal(book)
-			log.Printf("%s", err)
-			log.Printf("%s", gotJSON)
+			log.Printf("postBook(): %s", err)
+			log.Printf("postBook(): %s", gotJSON)
 
 			c.String(http.StatusBadRequest, err.Error())
 			return
@@ -38,13 +38,15 @@ func postBook(c *gin.Context) {
 		return
 	}
 
+	log.Printf("postBook(): failed to parse JSON")
 	c.String(http.StatusBadRequest, "failed to parse JSON")
 }
 
 func getBooks(c *gin.Context) {
 	books, err := dbDir.SelectBooks()
 	if err != nil {
-		log.Printf("%s", err)
+		log.Printf("getBooks(): %s", err)
+
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -54,7 +56,7 @@ func getBooks(c *gin.Context) {
 func deleteBook(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		log.Printf("%s", err)
+		log.Printf("deleteBook(): %s", err)
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
@@ -63,8 +65,8 @@ func deleteBook(c *gin.Context) {
 	err = dbDir.DeleteBook(receivedBook)
 	if err != nil {
 		gotJSON, _ := json.Marshal(receivedBook)
-		log.Printf("%s", err)
-		log.Printf("%s", gotJSON)
+		log.Printf("deleteBook(): %s", err)
+		log.Printf("deleteBook(): %s", gotJSON)
 
 		c.String(http.StatusBadRequest, err.Error())
 		return
@@ -76,7 +78,7 @@ func deleteBook(c *gin.Context) {
 func getBook(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		log.Printf("%s", err)
+		log.Printf("getBook(): %s", err)
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
@@ -84,7 +86,10 @@ func getBook(c *gin.Context) {
 
 	book, err := dbDir.SelectBook(receivedBook)
 	if err != nil {
-		log.Printf("%s", err)
+		gotJSON, _ := json.Marshal(book)
+		log.Printf("getBook(): %s", err)
+		log.Printf("getBook(): %s", gotJSON)
+
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -99,8 +104,8 @@ func updateBook(c *gin.Context) {
 		err := dbDir.UpdateBook(book)
 		if err != nil {
 			gotJSON, _ := json.Marshal(book)
-			log.Printf("%s", err)
-			log.Printf("%s", gotJSON)
+			log.Printf("updateBook(): %s", err)
+			log.Printf("updateBook(): %s", gotJSON)
 
 			c.String(http.StatusBadRequest, err.Error())
 			return
@@ -110,5 +115,6 @@ func updateBook(c *gin.Context) {
 		return
 	}
 
+	log.Printf("postBook(): failed to parse JSON")
 	c.String(http.StatusBadRequest, "failed to parse JSON")
 }

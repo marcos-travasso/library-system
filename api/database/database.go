@@ -11,10 +11,6 @@ type entity interface {
 	SQLStatement(statementType string) (string, error)
 }
 
-type entityID interface {
-	GetIDString() string
-}
-
 type linkEntity interface {
 	LinkSQLStatement(statementType string) (string, error)
 }
@@ -94,15 +90,10 @@ func sendStatement(e entity, statementType string, db *sql.DB) error {
 
 	statement, err := e.SQLStatement(statementType)
 	if err != nil {
-		log.Printf("Fail to get statement: %s", err)
 		return err
 	}
 
 	_, err = db.Exec(statement)
-	if err != nil {
-		log.Printf("Fail to %s: %s", statementType, err)
-		return err
-	}
 
 	return err
 }
@@ -111,13 +102,11 @@ func sendLinkStatement(e linkEntity, statementType string, db *sql.DB) error {
 
 	statement, err := e.LinkSQLStatement(statementType)
 	if err != nil {
-		log.Printf("Fail to get link statement: %s", err)
 		return err
 	}
 
 	_, err = db.Exec(statement)
 	if err != nil {
-		log.Printf("Fail to %s: %s", statementType, err)
 		return err
 	}
 
@@ -136,7 +125,6 @@ func (dbDir *Database) countRows(table string) (int, error) {
 	query := "SELECT COUNT(*) FROM " + table
 	rows, err := db.Query(query)
 	if err != nil {
-		log.Printf("Fail to count: %s", err)
 		return 0, err
 	}
 
@@ -144,7 +132,6 @@ func (dbDir *Database) countRows(table string) (int, error) {
 	for rows.Next() {
 		err = rows.Scan(&count)
 		if err != nil {
-			log.Printf("Fail to receive count: %s", err)
 			return 0, err
 		}
 	}
@@ -164,7 +151,6 @@ func (dbDir *Database) getLastID(table string, column string) (int, error) {
 	query := "SELECT " + column + " from " + table + " ORDER BY " + column + " DESC LIMIT 1"
 	rows, err := db.Query(query)
 	if err != nil {
-		log.Printf("Fail to select: %s", err)
 		return 0, err
 	}
 
@@ -172,7 +158,6 @@ func (dbDir *Database) getLastID(table string, column string) (int, error) {
 	for rows.Next() {
 		err = rows.Scan(&id)
 		if err != nil {
-			log.Printf("Fail to receive last ID: %s", err)
 			return 0, err
 		}
 	}
@@ -191,7 +176,6 @@ func (dbDir *Database) checkIfRowExists(e entity) (int, error) {
 
 	rows, err := db.Query(e.SQLStatement("SELECT"))
 	if err != nil {
-		log.Printf("Fail to query: %s", err)
 		return 0, err
 	}
 	defer func(rows *sql.Rows) {
@@ -207,7 +191,6 @@ func (dbDir *Database) checkIfRowExists(e entity) (int, error) {
 		err = rows.Scan(&existentID, &name)
 
 		if err != nil {
-			log.Printf("Fail to receive row: %s", err)
 			return 0, err
 		}
 

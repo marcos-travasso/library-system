@@ -59,7 +59,6 @@ func (dbDir Database) SelectBook(b structs.Book) (structs.Book, error) {
 
 	rows, err := db.Query(b.SQLStatement("SELECT"))
 	if err != nil {
-		log.Printf("Fail to query book id: %s", err)
 		return book, err
 	}
 	defer func(rows *sql.Rows) {
@@ -72,14 +71,12 @@ func (dbDir Database) SelectBook(b structs.Book) (structs.Book, error) {
 	for rows.Next() {
 		err = rows.Scan(&book.ID, &book.Title, &book.Year, &book.Pages, &book.Author.ID, &book.Author.Person.ID, &book.Author.Person.Name, &book.Author.Person.Gender, &book.Author.Person.Birthday)
 		if err != nil {
-			log.Printf("Fail to receive book id: %s", err)
 			return book, err
 		}
 	}
 
 	rows, err = db.Query(b.LinkSQLStatement("SELECT"))
 	if err != nil {
-		log.Printf("Fail to query book genre: %s", err)
 		return book, err
 	}
 	defer func(rows *sql.Rows) {
@@ -92,7 +89,6 @@ func (dbDir Database) SelectBook(b structs.Book) (structs.Book, error) {
 	for rows.Next() {
 		err = rows.Scan(&book.Genre.ID, &book.Genre.Name)
 		if err != nil {
-			log.Printf("Fail to receive genre: %s", err)
 			return book, err
 		}
 	}
@@ -115,7 +111,6 @@ func (dbDir Database) SelectBooks() ([]structs.Book, error) {
 
 	bookCount, err := dbDir.countRows("Livros")
 	if err != nil {
-		log.Printf("Fail to receive book count: %s", err)
 		return nil, err
 	}
 
@@ -123,14 +118,12 @@ func (dbDir Database) SelectBooks() ([]structs.Book, error) {
 
 	rows, err := db.Query("SELECT idLivro, titulo, ano, paginas, autor, idPessoa, nome, genero, nascimento FROM (Livros INNER JOIN Autores A on Livros.autor = A.idAutor) INNER JOIN Pessoas on pessoa = Pessoas.idPessoa")
 	if err != nil {
-		log.Printf("Fail to query books: %s", err)
 		return nil, err
 	}
 
 	for i := 0; rows.Next(); i++ {
 		err = rows.Scan(&books[i].ID, &books[i].Title, &books[i].Year, &books[i].Pages, &books[i].Author.ID, &books[i].Author.Person.ID, &books[i].Author.Person.Name, &books[i].Author.Person.Gender, &books[i].Author.Person.Birthday)
 		if err != nil {
-			log.Printf("Fail to receive books: %s", err)
 			return nil, err
 		}
 	}
@@ -138,14 +131,12 @@ func (dbDir Database) SelectBooks() ([]structs.Book, error) {
 	for i := range books {
 		rows, err = db.Query(books[i].LinkSQLStatement("SELECT"))
 		if err != nil {
-			log.Printf("Fail to query book genre: %s", err)
 			return nil, err
 		}
 
 		for rows.Next() {
 			err = rows.Scan(&books[i].Genre.ID, &books[i].Genre.Name)
 			if err != nil {
-				log.Printf("Fail to receive genre: %s", err)
 				return nil, err
 			}
 		}
@@ -203,9 +194,5 @@ func (dbDir Database) UpdateBook(b structs.Book) error {
 	}
 
 	err = sendStatement(b, "UPDATE", db)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }

@@ -25,8 +25,8 @@ func postUser(c *gin.Context) {
 		id, err := dbDir.InsertUser(user)
 		if err != nil {
 			gotJSON, _ := json.Marshal(user)
-			log.Printf("%s", err)
-			log.Printf("%s", gotJSON)
+			log.Printf("postUser(): %s", err)
+			log.Printf("postUser(): %s", gotJSON)
 
 			c.String(http.StatusBadRequest, err.Error())
 			return
@@ -38,13 +38,15 @@ func postUser(c *gin.Context) {
 		return
 	}
 
+	log.Printf("postUser(): failed to parse JSON")
 	c.String(http.StatusBadRequest, "failed to parse JSON")
 }
 
 func getUsers(c *gin.Context) {
 	users, err := dbDir.SelectUsers()
 	if err != nil {
-		log.Printf("%s", err)
+		log.Printf("getUsers(): %s", err)
+
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -54,7 +56,8 @@ func getUsers(c *gin.Context) {
 func deleteUser(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		log.Printf("%s", err)
+		log.Printf("deleteUser(): %s", err)
+
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
@@ -63,8 +66,8 @@ func deleteUser(c *gin.Context) {
 	err = dbDir.DeleteUser(receivedUser)
 	if err != nil {
 		gotJSON, _ := json.Marshal(receivedUser)
-		log.Printf("%s", err)
-		log.Printf("%s", gotJSON)
+		log.Printf("deleteUser(): %s", err)
+		log.Printf("deleteUser(): %s", gotJSON)
 
 		c.String(http.StatusBadRequest, err.Error())
 		return
@@ -76,7 +79,8 @@ func deleteUser(c *gin.Context) {
 func getUser(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		log.Printf("%s", err)
+		log.Printf("getUser(): %s", err)
+
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
@@ -84,7 +88,8 @@ func getUser(c *gin.Context) {
 
 	user, err := dbDir.SelectUser(receivedUser)
 	if err != nil {
-		log.Printf("%s", err)
+		log.Printf("getUser(): %s", err)
+
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -99,8 +104,8 @@ func updateUser(c *gin.Context) {
 		err := dbDir.UpdateUser(user)
 		if err != nil {
 			gotJSON, _ := json.Marshal(user)
-			log.Printf("%s", err)
-			log.Printf("%s", gotJSON)
+			log.Printf("updateUser(): %s", err)
+			log.Printf("updateUser(): %s", gotJSON)
 
 			c.String(http.StatusBadRequest, err.Error())
 			return
@@ -110,5 +115,6 @@ func updateUser(c *gin.Context) {
 		return
 	}
 
+	log.Printf("updateUser(): failed to parse JSON")
 	c.String(http.StatusBadRequest, "Fail to parse JSON")
 }

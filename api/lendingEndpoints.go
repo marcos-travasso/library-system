@@ -24,8 +24,8 @@ func postLending(c *gin.Context) {
 		id, err := dbDir.InsertLending(lending)
 		if err != nil {
 			gotJSON, _ := json.Marshal(lending)
-			log.Printf("%s", err)
-			log.Printf("%s", gotJSON)
+			log.Printf("postLending(): %s", err)
+			log.Printf("postLending(): %s", gotJSON)
 
 			c.String(http.StatusBadRequest, err.Error())
 			return
@@ -37,13 +37,15 @@ func postLending(c *gin.Context) {
 		return
 	}
 
+	log.Printf("postLending(): failed to parse JSON")
 	c.String(http.StatusBadRequest, "failed to parse JSON")
 }
 
 func getLendings(c *gin.Context) {
 	lendings, err := dbDir.SelectLendings()
 	if err != nil {
-		log.Printf("%s", err)
+		log.Printf("getLendings(): %s", err)
+
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -53,7 +55,7 @@ func getLendings(c *gin.Context) {
 func getLending(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		log.Printf("%s", err)
+		log.Printf("getLending(): %s", err)
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
@@ -61,7 +63,10 @@ func getLending(c *gin.Context) {
 
 	lending, err := dbDir.SelectLending(receivedLending)
 	if err != nil {
-		log.Printf("%s", err)
+		gotJSON, _ := json.Marshal(receivedLending)
+		log.Printf("getLending(): %s", err)
+		log.Printf("getLending(): %s", gotJSON)
+
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -72,7 +77,7 @@ func getLending(c *gin.Context) {
 func returnLending(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		log.Printf("%s", err)
+		log.Printf("returnLending(): %s", err)
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
@@ -80,7 +85,10 @@ func returnLending(c *gin.Context) {
 
 	err = dbDir.ReturnBook(receivedLending)
 	if err != nil {
-		log.Printf("%s", err)
+		gotJSON, _ := json.Marshal(receivedLending)
+		log.Printf("returnLending(): %s", err)
+		log.Printf("returnLending(): %s", gotJSON)
+
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}

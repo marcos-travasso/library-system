@@ -49,7 +49,6 @@ func (dbDir Database) SelectUser(u structs.User) (structs.User, error) {
 
 	rows, err := db.Query(u.SQLStatement("SELECT"))
 	if err != nil {
-		log.Printf("Fail to query user id: %s", err)
 		return user, err
 	}
 	defer func(rows *sql.Rows) {
@@ -63,7 +62,6 @@ func (dbDir Database) SelectUser(u structs.User) (structs.User, error) {
 		responsible := sql.NullInt32{}
 		err = rows.Scan(&user.ID, &user.CellNumber, &user.PhoneNumber, &user.CPF, &user.Email, &responsible, &user.CreationDate, &user.Person.ID, &user.Person.Name, &user.Person.Gender, &user.Person.Birthday, &user.Address.ID, &user.Address.CEP, &user.Address.City, &user.Address.Neighborhood, &user.Address.Street, &user.Address.Number, &user.Address.Complement)
 		if err != nil {
-			log.Printf("Fail to receive user id: %s", err)
 			return user, err
 		}
 	}
@@ -87,7 +85,6 @@ func (dbDir Database) SelectUsers() ([]structs.User, error) {
 
 	userCount, err := dbDir.countRows("Usuarios")
 	if err != nil {
-		log.Printf("Fail to receive user count: %s", err)
 		return nil, err
 	}
 
@@ -95,7 +92,6 @@ func (dbDir Database) SelectUsers() ([]structs.User, error) {
 
 	rows, err := db.Query("SELECT idUsuario, celular, telefone, cpf, email, responsavel, criacao, idPessoa, nome, genero, nascimento, idEndereco, cep, cidade, bairro, rua, numero, complemento FROM ((Usuarios INNER JOIN Pessoas ON Pessoas.idPessoa = Usuarios.pessoa) INNER JOIN Enderecos ON Usuarios.endereco = Enderecos.idEndereco)")
 	if err != nil {
-		log.Printf("Fail to query users: %s", err)
 		return nil, err
 	}
 
@@ -103,7 +99,6 @@ func (dbDir Database) SelectUsers() ([]structs.User, error) {
 		responsible := sql.NullInt32{}
 		err = rows.Scan(&users[i].ID, &users[i].CellNumber, &users[i].PhoneNumber, &users[i].CPF, &users[i].Email, &responsible, &users[i].CreationDate, &users[i].Person.ID, &users[i].Person.Name, &users[i].Person.Gender, &users[i].Person.Birthday, &users[i].Address.ID, &users[i].Address.CEP, &users[i].Address.City, &users[i].Address.Neighborhood, &users[i].Address.Street, &users[i].Address.Number, &users[i].Address.Complement)
 		if err != nil {
-			log.Printf("Fail to receive users id: %s", err)
 			return nil, err
 		}
 		users[i].CreationDate = users[i].CreationDate[:10]
@@ -171,9 +166,5 @@ func (dbDir Database) UpdateUser(u structs.User) error {
 	}
 
 	err = dbDir.updatePerson(u.Person)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }

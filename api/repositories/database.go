@@ -8,7 +8,7 @@ import (
 
 var DatabaseDirectory string
 
-func initializeDatabase() *sql.DB {
+func InitializeDatabase() *sql.DB {
 	conn, err := sql.Open("sqlite3", DatabaseDirectory)
 	if err != nil {
 		log.Fatalf("Failed to open database: %s", err)

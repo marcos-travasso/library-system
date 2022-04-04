@@ -1,14 +1,12 @@
 package repositories
 
 import (
+	"database/sql"
 	"github.com/marcos-travasso/library-system/models"
 	"log"
 )
 
-func InsertBook(b models.Book) (int64, error) {
-	db := initializeDatabase()
-	defer db.Close()
-
+func InsertBook(db *sql.DB, b models.Book) (int64, error) {
 	//TODO insert author and genre in the service layer
 	result, err := db.Exec("INSERT INTO Livros(titulo, ano, autor, paginas) values (?, ?, ?, ?)", b.Title, b.Year, b.Author.ID, b.Pages)
 	if err != nil {
@@ -20,10 +18,7 @@ func InsertBook(b models.Book) (int64, error) {
 	return result.LastInsertId()
 }
 
-func SelectBook(b models.Book) (models.Book, error) {
-	db := initializeDatabase()
-	defer db.Close()
-
+func SelectBook(db *sql.DB, b models.Book) (models.Book, error) {
 	var book models.Book
 
 	//TODO remove this horrendous query and splice into 3 functions (selectBook, selectAuthor and selectGenres)
@@ -42,10 +37,7 @@ func SelectBook(b models.Book) (models.Book, error) {
 	return book, nil
 }
 
-func SelectBooks() ([]models.Book, error) {
-	db := initializeDatabase()
-	defer db.Close()
-
+func SelectBooks(db *sql.DB) ([]models.Book, error) {
 	books := make([]models.Book, 0)
 
 	rows, err := db.Query("SELECT idLivro, titulo, ano, paginas, autor, idPessoa, nome, genero, nascimento FROM (Livros INNER JOIN Autores A on Livros.autor = A.idAutor) INNER JOIN Pessoas on pessoa = Pessoas.idPessoa")
@@ -70,12 +62,12 @@ func SelectBooks() ([]models.Book, error) {
 	return books, nil
 }
 
-func DeleteBook(b models.Book) error {
+func DeleteBook(db *sql.DB, b models.Book) error {
 	//TODO
 	return nil
 }
 
-func UpdateBook(b models.Book) error {
+func UpdateBook(db *sql.DB, b models.Book) error {
 	//TODO
 	return nil
 }

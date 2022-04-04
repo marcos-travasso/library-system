@@ -1,42 +1,53 @@
 package repositories
 
 import (
+	"database/sql"
 	"github.com/marcos-travasso/library-system/models"
 	"log"
 )
 
-func InsertAddress(a models.Address) (int64, error) {
-	db := initializeDatabase()
-	defer db.Close()
-
+func InsertAddress(db *sql.DB, a *models.Address) (err error) {
 	result, err := db.Exec("INSERT INTO Enderecos(CEP, cidade, bairro, rua, numero, complemento) values (?, ?, ?, ?, ?, ?)", a.CEP, a.City, a.Neighborhood, a.Street, a.Number, a.Complement)
 	if err != nil {
 		log.Println("insert address error: " + err.Error())
-		return 0, err
+		return
 	}
 
-	return result.LastInsertId()
+	a.ID, err = result.LastInsertId()
+	return
 }
 
-func DeleteAddress(a models.Address) (err error) {
-	db := initializeDatabase()
-	defer db.Close()
+func SelectAddress(db *sql.DB, a *models.Address) (err error) {
+	row := db.QueryRow("SELECT * FROM Enderecos WHERE idEndereco = ?", a.ID)
+	if row.Err() != nil {
+		log.Println("select address error: " + row.Err().Error())
+		return row.Err()
+	}
 
-	_, err = db.Exec("DELETE FROM Enderecos WHERE idEndereco = ?", a.ID)
+	err = row.Scan(&a.ID, &a.CEP, &a.City, &a.Neighborhood, &a.Street, &a.Number, &a.Complement)
 	if err != nil {
-		log.Println("delete address error: " + err.Error())
+		log.Println("scan address error: " + err.Error())
+		return
 	}
 
 	return
 }
 
-func UpdateAddress(a models.Address) (err error) {
-	db := initializeDatabase()
-	defer db.Close()
+func DeleteAddress(db *sql.DB, a *models.Address) (err error) {
+	_, err = db.Exec("DELETE FROM Enderecos WHERE idEndereco = ?", a.ID)
+	if err != nil {
+		log.Println("delete address error: " + err.Error())
+		return
+	}
 
+	return
+}
+
+func UpdateAddress(db *sql.DB, a *models.Address) (err error) {
 	_, err = db.Exec("UPDATE Enderecos SET CEP=?, cidade=?, bairro=?, rua=?, numero=?, complemento=? WHERE idEndereco = ?", a.CEP, a.City, a.Neighborhood, a.Street, a.Number, a.Complement, a.ID)
 	if err != nil {
 		log.Println("update address error: " + err.Error())
+		return
 	}
 
 	return

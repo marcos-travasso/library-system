@@ -6,7 +6,7 @@ import (
 )
 
 func CheckIfAuthorExists(a models.Author) (authorId int, err error) {
-	db := initializeDatabase()
+	db := InitializeDatabase()
 	defer db.Close()
 
 	row := db.QueryRow("select idAutor from Autores inner join Pessoas P on P.idPessoa = Autores.pessoa where lower(nome) == ?", a.Person.Name)
@@ -25,9 +25,7 @@ func CheckIfAuthorExists(a models.Author) (authorId int, err error) {
 
 //TODO call CheckIfAuthorExists before InsertAuthor in the author service file
 func InsertAuthor(a models.Author) (int64, error) {
-	InsertPerson(a.Person)
-
-	db := initializeDatabase()
+	db := InitializeDatabase()
 	defer db.Close()
 
 	result, err := db.Exec("INSERT INTO Autores(pessoa) values (?)", a.Person.ID)

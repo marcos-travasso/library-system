@@ -1,13 +1,13 @@
-package database
+package repositories
 
 import (
 	"database/sql"
 	"errors"
-	"github.com/marcos-travasso/library-system/api/structs"
+	"github.com/marcos-travasso/library-system/models"
 	"log"
 )
 
-func (dbDir Database) InsertBook(b structs.Book) (int, error) {
+func (dbDir Database) InsertBook(b models.Book) (int, error) {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()
@@ -46,7 +46,7 @@ func (dbDir Database) InsertBook(b structs.Book) (int, error) {
 	return b.ID, err
 }
 
-func (dbDir Database) SelectBook(b structs.Book) (structs.Book, error) {
+func (dbDir Database) SelectBook(b models.Book) (models.Book, error) {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()
@@ -55,7 +55,7 @@ func (dbDir Database) SelectBook(b structs.Book) (structs.Book, error) {
 		}
 	}(db)
 
-	book := structs.Book{}
+	book := models.Book{}
 
 	rows, err := db.Query(b.SQLStatement("SELECT"))
 	if err != nil {
@@ -100,7 +100,7 @@ func (dbDir Database) SelectBook(b structs.Book) (structs.Book, error) {
 	return book, nil
 }
 
-func (dbDir Database) SelectBooks() ([]structs.Book, error) {
+func (dbDir Database) SelectBooks() ([]models.Book, error) {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()
@@ -114,7 +114,7 @@ func (dbDir Database) SelectBooks() ([]structs.Book, error) {
 		return nil, err
 	}
 
-	books := make([]structs.Book, bookCount, bookCount)
+	books := make([]models.Book, bookCount, bookCount)
 
 	rows, err := db.Query("SELECT idLivro, titulo, ano, paginas, autor, idPessoa, nome, genero, nascimento FROM (Livros INNER JOIN Autores A on Livros.autor = A.idAutor) INNER JOIN Pessoas on pessoa = Pessoas.idPessoa")
 	if err != nil {
@@ -145,7 +145,7 @@ func (dbDir Database) SelectBooks() ([]structs.Book, error) {
 	return books, nil
 }
 
-func (dbDir Database) DeleteBook(b structs.Book) error {
+func (dbDir Database) DeleteBook(b models.Book) error {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()
@@ -167,7 +167,7 @@ func (dbDir Database) DeleteBook(b structs.Book) error {
 	return nil
 }
 
-func (dbDir Database) UpdateBook(b structs.Book) error {
+func (dbDir Database) UpdateBook(b models.Book) error {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()

@@ -1,13 +1,13 @@
-package database
+package repositories
 
 import (
 	"database/sql"
 	"errors"
-	"github.com/marcos-travasso/library-system/api/structs"
+	"github.com/marcos-travasso/library-system/models"
 	"log"
 )
 
-func (dbDir Database) InsertUser(u structs.User) (int, error) {
+func (dbDir Database) InsertUser(u models.User) (int, error) {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()
@@ -36,7 +36,7 @@ func (dbDir Database) InsertUser(u structs.User) (int, error) {
 	return dbDir.getLastID("Usuarios", "idUsuario")
 }
 
-func (dbDir Database) SelectUser(u structs.User) (structs.User, error) {
+func (dbDir Database) SelectUser(u models.User) (models.User, error) {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()
@@ -45,7 +45,7 @@ func (dbDir Database) SelectUser(u structs.User) (structs.User, error) {
 		}
 	}(db)
 
-	user := structs.User{}
+	user := models.User{}
 
 	rows, err := db.Query(u.SQLStatement("SELECT"))
 	if err != nil {
@@ -74,7 +74,7 @@ func (dbDir Database) SelectUser(u structs.User) (structs.User, error) {
 	return user, nil
 }
 
-func (dbDir Database) SelectUsers() ([]structs.User, error) {
+func (dbDir Database) SelectUsers() ([]models.User, error) {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()
@@ -88,7 +88,7 @@ func (dbDir Database) SelectUsers() ([]structs.User, error) {
 		return nil, err
 	}
 
-	users := make([]structs.User, userCount, userCount)
+	users := make([]models.User, userCount, userCount)
 
 	rows, err := db.Query("SELECT idUsuario, celular, telefone, cpf, email, responsavel, criacao, idPessoa, nome, genero, nascimento, idEndereco, cep, cidade, bairro, rua, numero, complemento FROM ((Usuarios INNER JOIN Pessoas ON Pessoas.idPessoa = Usuarios.pessoa) INNER JOIN Enderecos ON Usuarios.endereco = Enderecos.idEndereco)")
 	if err != nil {
@@ -107,7 +107,7 @@ func (dbDir Database) SelectUsers() ([]structs.User, error) {
 	return users, nil
 }
 
-func (dbDir Database) DeleteUser(u structs.User) error {
+func (dbDir Database) DeleteUser(u models.User) error {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()
@@ -139,7 +139,7 @@ func (dbDir Database) DeleteUser(u structs.User) error {
 	return nil
 }
 
-func (dbDir Database) UpdateUser(u structs.User) error {
+func (dbDir Database) UpdateUser(u models.User) error {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()

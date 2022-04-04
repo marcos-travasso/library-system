@@ -1,10 +1,10 @@
-package main
+package controllers
 
 import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/marcos-travasso/library-system/api/structs"
+	"github.com/marcos-travasso/library-system/models"
 	"log"
 	"net/http"
 	"strconv"
@@ -19,7 +19,7 @@ func setupBookEndpoints() {
 }
 
 func postBook(c *gin.Context) {
-	var book structs.Book
+	var book models.Book
 
 	if c.BindJSON(&book) == nil {
 		id, err := dbDir.InsertBook(book)
@@ -60,7 +60,7 @@ func deleteBook(c *gin.Context) {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	receivedBook := structs.Book{ID: id}
+	receivedBook := models.Book{ID: id}
 
 	err = dbDir.DeleteBook(receivedBook)
 	if err != nil {
@@ -82,7 +82,7 @@ func getBook(c *gin.Context) {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	receivedBook := structs.Book{ID: id}
+	receivedBook := models.Book{ID: id}
 
 	book, err := dbDir.SelectBook(receivedBook)
 	if err != nil {
@@ -98,7 +98,7 @@ func getBook(c *gin.Context) {
 }
 
 func updateBook(c *gin.Context) {
-	var book structs.Book
+	var book models.Book
 
 	if c.BindJSON(&book) == nil {
 		err := dbDir.UpdateBook(book)

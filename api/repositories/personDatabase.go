@@ -1,12 +1,12 @@
-package database
+package repositories
 
 import (
 	"database/sql"
-	"github.com/marcos-travasso/library-system/api/structs"
+	"github.com/marcos-travasso/library-system/models"
 	"log"
 )
 
-func (dbDir Database) insertPerson(p structs.Person) (int, error) {
+func (dbDir Database) insertPerson(p models.Person) (int, error) {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()
@@ -23,7 +23,7 @@ func (dbDir Database) insertPerson(p structs.Person) (int, error) {
 	return dbDir.getLastID("Pessoas", "idPessoa")
 }
 
-func (dbDir Database) deletePerson(p structs.Person) error {
+func (dbDir Database) deletePerson(p models.Person) error {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()
@@ -40,7 +40,7 @@ func (dbDir Database) deletePerson(p structs.Person) error {
 	return nil
 }
 
-func (dbDir Database) updatePerson(p structs.Person) error {
+func (dbDir Database) updatePerson(p models.Person) error {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()

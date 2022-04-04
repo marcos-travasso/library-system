@@ -1,12 +1,12 @@
-package database
+package repositories
 
 import (
 	"database/sql"
-	"github.com/marcos-travasso/library-system/api/structs"
+	"github.com/marcos-travasso/library-system/models"
 	"log"
 )
 
-func (dbDir Database) insertGenre(g structs.Genre) (int, error) {
+func (dbDir Database) insertGenre(g models.Genre) (int, error) {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()

@@ -1,10 +1,10 @@
-package main
+package controllers
 
 import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/marcos-travasso/library-system/api/structs"
+	"github.com/marcos-travasso/library-system/models"
 	"log"
 	"net/http"
 	"strconv"
@@ -18,7 +18,7 @@ func setupLendingEndpoints() {
 }
 
 func postLending(c *gin.Context) {
-	var lending structs.Lending
+	var lending models.Lending
 
 	if c.BindJSON(&lending) == nil {
 		id, err := dbDir.InsertLending(lending)
@@ -59,7 +59,7 @@ func getLending(c *gin.Context) {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	receivedLending := structs.Lending{ID: id}
+	receivedLending := models.Lending{ID: id}
 
 	lending, err := dbDir.SelectLending(receivedLending)
 	if err != nil {
@@ -81,7 +81,7 @@ func returnLending(c *gin.Context) {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	receivedLending := structs.Lending{ID: id}
+	receivedLending := models.Lending{ID: id}
 
 	err = dbDir.ReturnBook(receivedLending)
 	if err != nil {

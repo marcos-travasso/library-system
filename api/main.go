@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/marcos-travasso/library-system/api/database"
 	"log"
 	"os"
 )

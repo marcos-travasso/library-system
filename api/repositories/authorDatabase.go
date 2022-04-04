@@ -1,12 +1,13 @@
-package database
+package repositories
 
 import (
 	"database/sql"
 	"github.com/marcos-travasso/library-system/api/structs"
+	"github.com/marcos-travasso/library-system/models"
 	"log"
 )
 
-func (dbDir Database) InsertAuthor(a structs.Author) (int, error) {
+func (dbDir Database) InsertAuthor(a models.Author) (int, error) {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()

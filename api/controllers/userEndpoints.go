@@ -1,10 +1,10 @@
-package main
+package controllers
 
 import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/marcos-travasso/library-system/api/structs"
+	"github.com/marcos-travasso/library-system/models"
 	"log"
 	"net/http"
 	"strconv"
@@ -19,7 +19,7 @@ func setupUserEndpoints() {
 }
 
 func postUser(c *gin.Context) {
-	var user structs.User
+	var user models.User
 
 	if c.BindJSON(&user) == nil {
 		id, err := dbDir.InsertUser(user)
@@ -61,7 +61,7 @@ func deleteUser(c *gin.Context) {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	receivedUser := structs.User{ID: id}
+	receivedUser := models.User{ID: id}
 
 	err = dbDir.DeleteUser(receivedUser)
 	if err != nil {
@@ -84,7 +84,7 @@ func getUser(c *gin.Context) {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	receivedUser := structs.User{ID: id}
+	receivedUser := models.User{ID: id}
 
 	user, err := dbDir.SelectUser(receivedUser)
 	if err != nil {
@@ -98,7 +98,7 @@ func getUser(c *gin.Context) {
 }
 
 func updateUser(c *gin.Context) {
-	var user structs.User
+	var user models.User
 
 	if c.BindJSON(&user) == nil {
 		err := dbDir.UpdateUser(user)

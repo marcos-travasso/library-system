@@ -1,14 +1,14 @@
-package database
+package repositories
 
 import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/marcos-travasso/library-system/api/structs"
+	"github.com/marcos-travasso/library-system/models"
 	"log"
 )
 
-func (dbDir Database) InsertLending(l structs.Lending) (int, error) {
+func (dbDir Database) InsertLending(l models.Lending) (int, error) {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()
@@ -47,7 +47,7 @@ func (dbDir Database) InsertLending(l structs.Lending) (int, error) {
 	return l.ID, err
 }
 
-func (dbDir Database) SelectLending(l structs.Lending) (structs.Lending, error) {
+func (dbDir Database) SelectLending(l models.Lending) (models.Lending, error) {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()
@@ -94,7 +94,7 @@ func (dbDir Database) SelectLending(l structs.Lending) (structs.Lending, error) 
 	return l, nil
 }
 
-func (dbDir Database) SelectLendings() ([]structs.Lending, error) {
+func (dbDir Database) SelectLendings() ([]models.Lending, error) {
 	var db = initializeDatabase(dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()
@@ -116,7 +116,7 @@ func (dbDir Database) SelectLendings() ([]structs.Lending, error) {
 		}
 	}
 
-	lendings := make([]structs.Lending, lendingCount, lendingCount)
+	lendings := make([]models.Lending, lendingCount, lendingCount)
 
 	rows, err = db.Query("SELECT idEmprestimo, livro, usuario, dataDoPedido, devolvido from emprestimos")
 	if err != nil {
@@ -154,7 +154,7 @@ func (dbDir Database) SelectLendings() ([]structs.Lending, error) {
 	return lendings, nil
 }
 
-func (dbDir Database) ReturnBook(l structs.Lending) error {
+func (dbDir Database) ReturnBook(l models.Lending) error {
 	if l.ID == 0 {
 		return errors.New("lending has no id")
 	}
@@ -171,7 +171,7 @@ func (dbDir Database) ReturnBook(l structs.Lending) error {
 	return err
 }
 
-func (dbDir *Database) haveLending(u structs.User) (bool, error) {
+func (dbDir *Database) haveLending(u models.User) (bool, error) {
 	var db = initializeDatabase(*dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()
@@ -200,7 +200,7 @@ func (dbDir *Database) haveLending(u structs.User) (bool, error) {
 	return haveLending, nil
 }
 
-func (dbDir *Database) isLending(b structs.Book) (bool, error) {
+func (dbDir *Database) isLending(b models.Book) (bool, error) {
 	var db = initializeDatabase(*dbDir)
 	defer func(db *sql.DB) {
 		err := db.Close()

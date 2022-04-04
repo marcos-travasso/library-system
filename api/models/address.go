@@ -1,7 +1,7 @@
 package models
 
 type Address struct {
-	ID           int    `json:"id"`
+	ID           int64  `json:"id"`
 	Number       int    `json:"number"`
 	CEP          string `json:"cep"`
 	City         string `json:"city"`

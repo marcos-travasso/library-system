@@ -11,4 +11,5 @@ func InitializeControllers() {
 
 	initializeUserController()
 	initializeBookController()
+	initializeLendingController()
 }

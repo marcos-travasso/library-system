@@ -1,46 +1,38 @@
 package controllers
 
-//
-//import (
-//	"encoding/json"
-//	"fmt"
-//	"github.com/gin-gonic/gin"
-//	"github.com/marcos-travasso/library-system/models"
-//	"log"
-//	"net/http"
-//	"strconv"
-//)
-//
-//func setupLendingEndpoints() {
-//	router.POST("/lendings", postLending)
-//	router.GET("/lendings", getLendings)
-//	router.GET("/lendings/:id", getLending)
-//	router.PATCH("/lendings/:id", returnLending)
-//}
-//
-//func postLending(c *gin.Context) {
-//	var lending models.Lending
-//
-//	if c.BindJSON(&lending) == nil {
-//		id, err := dbDir.InsertLending(lending)
-//		if err != nil {
-//			gotJSON, _ := json.Marshal(lending)
-//			log.Printf("postLending(): %s", err)
-//			log.Printf("postLending(): %s", gotJSON)
-//
-//			c.String(http.StatusBadRequest, err.Error())
-//			return
-//		}
-//
-//		idString := fmt.Sprint(id)
-//
-//		c.String(http.StatusOK, idString)
-//		return
-//	}
-//
-//	log.Printf("postLending(): failed to parse JSON")
-//	c.String(http.StatusBadRequest, "failed to parse JSON")
-//}
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/marcos-travasso/library-system/models"
+	"github.com/marcos-travasso/library-system/services"
+	"log"
+	"net/http"
+)
+
+func initializeLendingController() {
+	router.POST("/lendings", postLending)
+	//router.GET("/lendings", getLendings)
+	//router.GET("/lendings/:id", getLending)
+	//router.PATCH("/lendings/:id", returnLending)
+}
+
+func postLending(c *gin.Context) {
+	var lending models.Lending
+
+	if c.BindJSON(&lending) == nil {
+		err := services.InsertLending(&lending)
+		if err != nil {
+			c.String(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, lending)
+		return
+	}
+
+	log.Printf("postLending(): failed to parse JSON")
+	c.String(http.StatusBadRequest, "failed to parse JSON")
+}
+
 //
 //func getLendings(c *gin.Context) {
 //	lendings, err := dbDir.SelectLendings()

@@ -28,6 +28,12 @@ type DummyBookParams struct {
 	PersonRow    *sqlmock.Rows
 }
 
+type DummyLendingParams struct {
+	Lending      models.Lending
+	LendingId    int64
+	DevolutionId int64
+}
+
 func GenerateValidUser() *DummyUserParams {
 	var d DummyUserParams
 	u := util.RandomUser()
@@ -76,6 +82,20 @@ func GenerateValidBook() *DummyBookParams {
 	b.Author.ID = 0
 	b.Genre.ID = 0
 	d.Book = b
+
+	return &d
+}
+
+func GenerateValidLending() *DummyLendingParams {
+	var d DummyLendingParams
+	l := util.RandomLending()
+
+	d.LendingId = l.ID
+	d.DevolutionId = l.Devolution.ID
+
+	l.ID = 0
+	l.Devolution.ID = 0
+	d.Lending = l
 
 	return &d
 }

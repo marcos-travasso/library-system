@@ -42,7 +42,7 @@ func RandomEmail() string {
 }
 
 func RandomDate() string {
-	return fmt.Sprintf("%s-%s-%s", RandomInt(1, 31), RandomInt(1, 12), RandomInt(1000, 3000))
+	return fmt.Sprintf("%d-%d-%d ", RandomInt(1, 31), RandomInt(1, 12), RandomInt(1000, 3000))
 }
 
 func RandomAddress() (a models.Address) {

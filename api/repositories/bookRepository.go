@@ -6,19 +6,18 @@ import (
 	"log"
 )
 
-func InsertBook(db *sql.DB, b models.Book) (int64, error) {
-	//TODO insert author and genre in the service layer
+func InsertBook(db *sql.DB, b *models.Book) (err error) {
 	result, err := db.Exec("INSERT INTO Livros(titulo, ano, autor, paginas) values (?, ?, ?, ?)", b.Title, b.Year, b.Author.ID, b.Pages)
 	if err != nil {
 		log.Println("insert book error: " + err.Error())
-		return 0, err
+		return
 	}
 
-	//TODO insert link between book and genre through service layer
-	return result.LastInsertId()
+	b.ID, err = result.LastInsertId()
+	return
 }
 
-func SelectBook(db *sql.DB, b models.Book) (models.Book, error) {
+func SelectBook(db *sql.DB, b *models.Book) (models.Book, error) {
 	var book models.Book
 
 	//TODO remove this horrendous query and splice into 3 functions (selectBook, selectAuthor and selectGenres)
@@ -62,12 +61,12 @@ func SelectBooks(db *sql.DB) ([]models.Book, error) {
 	return books, nil
 }
 
-func DeleteBook(db *sql.DB, b models.Book) error {
+func DeleteBook(db *sql.DB, b *models.Book) error {
 	//TODO
 	return nil
 }
 
-func UpdateBook(db *sql.DB, b models.Book) error {
+func UpdateBook(db *sql.DB, b *models.Book) error {
 	//TODO
 	return nil
 }

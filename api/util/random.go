@@ -45,9 +45,7 @@ func RandomDate() string {
 	return fmt.Sprintf("%s-%s-%s", RandomInt(1, 31), RandomInt(1, 12), RandomInt(1000, 3000))
 }
 
-func RandomAddress() models.Address {
-	var a models.Address
-
+func RandomAddress() (a models.Address) {
 	a.ID = RandomInt(1, 256)
 	a.CEP = strconv.Itoa(int(RandomInt(8, 8)))
 	a.Complement = RandomString(8)
@@ -56,18 +54,16 @@ func RandomAddress() models.Address {
 	a.Street = RandomString(8)
 	a.Number = int(RandomInt(1, 256))
 
-	return a
+	return
 }
 
-func RandomPerson() models.Person {
-	var p models.Person
-
+func RandomPerson() (p models.Person) {
 	p.ID = RandomInt(1, 256)
 	p.Name = RandomString(8)
 	p.Gender = RandomString(1)
 	p.Birthday = RandomDate()
 
-	return p
+	return
 }
 
 func RandomUser() (u models.User) {
@@ -80,7 +76,7 @@ func RandomUser() (u models.User) {
 	u.CPF = strconv.Itoa(int(RandomInt(11, 11)))
 	u.CreationDate = RandomDate()
 
-	return u
+	return
 }
 
 func RandomAuthor() (a models.Author) {
@@ -93,6 +89,17 @@ func RandomAuthor() (a models.Author) {
 func RandomGenre() (g models.Genre) {
 	g.ID = RandomInt(1, 256)
 	g.Name = RandomName()
+
+	return
+}
+
+func RandomBook() (b models.Book) {
+	b.ID = RandomInt(1, 256)
+	b.Title = RandomName()
+	b.Pages = int(RandomInt(1, 256))
+	b.Year = int(RandomInt(1000, 3000))
+	b.Author = RandomAuthor()
+	b.Genre = RandomGenre()
 
 	return
 }

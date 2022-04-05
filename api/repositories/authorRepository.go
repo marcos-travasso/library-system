@@ -1,39 +1,36 @@
 package repositories
 
 import (
+	"database/sql"
+	"errors"
 	"github.com/marcos-travasso/library-system/models"
 	"log"
 )
 
-func CheckIfAuthorExists(a models.Author) (authorId int, err error) {
-	db := InitializeDatabase()
-	defer db.Close()
-
-	row := db.QueryRow("select idAutor from Autores inner join Pessoas P on P.idPessoa = Autores.pessoa where lower(nome) == ?", a.Person.Name)
+func CheckIfAuthorExists(db *sql.DB, a *models.Author) (err error) {
+	//Maybe this inner join is useful to avoid searching for a user with the same name as the wanted author
+	row := db.QueryRow("SELECT idAutor, pessoa from Autores inner join Pessoas P on P.idPessoa = Autores.pessoa where lower(nome) == ?", a.Person.Name)
 	if row.Err() != nil {
 		log.Println("check if author exists error: " + row.Err().Error())
-		return 0, row.Err()
+		return row.Err()
 	}
 
-	err = row.Scan(&authorId)
-	if err != nil {
+	err = row.Scan(&a.ID, &a.Person.ID)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		log.Println("scan author id error: " + err.Error())
+		return
 	}
-	//TODO verify if it returns int64 or int
-	return
+
+	return nil
 }
 
-//TODO call CheckIfAuthorExists before InsertAuthor in the author service file
-func InsertAuthor(a models.Author) (int64, error) {
-	db := InitializeDatabase()
-	defer db.Close()
-
+func InsertAuthor(db *sql.DB, a *models.Author) (err error) {
 	result, err := db.Exec("INSERT INTO Autores(pessoa) values (?)", a.Person.ID)
 	if err != nil {
 		log.Println("insert author error: " + err.Error())
-		return 0, err
+		return
 	}
 
-	//TODO return a models.Author struct instead of int
-	return result.LastInsertId()
+	a.ID, err = result.LastInsertId()
+	return
 }

@@ -10,7 +10,7 @@ func InsertUser(db *sql.DB, u *models.User) (err error) {
 	result, err := db.Exec("INSERT INTO Usuarios(pessoa, celular, telefone, endereco, cpf, email, criacao) values (?, ?, ?, ?, ?, ?, date('now'))", u.Person.ID, u.CellNumber, u.PhoneNumber, u.Address.ID, u.CPF, u.Email)
 	if err != nil {
 		log.Println("insert user error: " + err.Error())
-		return err
+		return
 	}
 
 	u.ID, err = result.LastInsertId()
@@ -38,6 +38,7 @@ func SelectUser(db *sql.DB, user *models.User) (err error) {
 func SelectUsers(db *sql.DB) ([]models.User, error) {
 	users := make([]models.User, 0)
 
+	//TODO da pra melhorar isso seguindo o padrao do service
 	rows, err := db.Query("SELECT idUsuario, celular, telefone, cpf, email, criacao, idPessoa, nome, genero, nascimento, idEndereco, cep, cidade, bairro, rua, numero, complemento FROM ((Usuarios INNER JOIN Pessoas ON Pessoas.idPessoa = Usuarios.pessoa) INNER JOIN Enderecos ON Usuarios.endereco = Enderecos.idEndereco)")
 	if err != nil {
 		log.Println("select users error: " + err.Error())

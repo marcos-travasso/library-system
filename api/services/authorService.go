@@ -31,3 +31,19 @@ func InsertAuthor(a *models.Author) (err error) {
 
 	return
 }
+
+func SelectAuthor(a *models.Author) (err error) {
+	err = repositories.SelectAuthor(db, a)
+	if err != nil {
+		log.Println("select author error: " + err.Error())
+		return
+	}
+
+	err = repositories.SelectPerson(db, &a.Person)
+	if err != nil {
+		log.Println("select author person error: " + err.Error())
+		return
+	}
+
+	return
+}

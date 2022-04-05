@@ -9,11 +9,11 @@ import (
 )
 
 type DummyAuthorParams struct {
-	author   models.Author
-	authorId int64
-	personId int64
-	//authorRow    *sqlmock.Rows
-	//personRow *sqlmock.Rows
+	author    models.Author
+	authorId  int64
+	personId  int64
+	authorRow *sqlmock.Rows
+	personRow *sqlmock.Rows
 }
 
 func generateValidAuthor() *DummyAuthorParams {
@@ -22,8 +22,9 @@ func generateValidAuthor() *DummyAuthorParams {
 
 	d.authorId = a.ID
 	d.personId = a.Person.ID
-	//d.authorRow = sqlmock.NewRows([]string{"", "", "", "", "", "", "", "", ""}).
-	//	AddRow(u.ID, u.Person.ID, u.CellNumber, u.PhoneNumber, u.Address.ID, u.CPF, u.Email, 0, u.CreationDate)
+	p := a.Person
+	d.authorRow = sqlmock.NewRows([]string{"", ""}).AddRow(a.ID, a.Person.ID)
+	d.personRow = sqlmock.NewRows([]string{"", "", "", ""}).AddRow(p.ID, p.Name, p.Gender, p.Birthday)
 
 	a.ID = 0
 	a.Person.ID = 0
@@ -50,7 +51,7 @@ func Test_InsertAuthor_ValidAuthor(t *testing.T) {
 	err := InsertAuthor(a)
 
 	require.NoError(t, err)
-	require.Equal(t, d.personId, a.Person.ID)
+	require.Equal(t, d.personId, p.ID)
 	require.Equal(t, d.authorId, a.ID)
 
 	err = mock.ExpectationsWereMet()
@@ -73,6 +74,29 @@ func Test_InsertAuthor_AlreadyInserted(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, d.personId, a.Person.ID)
 	require.Equal(t, d.authorId, a.ID)
+
+	err = mock.ExpectationsWereMet()
+	require.NoError(t, err)
+}
+
+func Test_SelectAuthor_ValidAuthor(t *testing.T) {
+	InitializeTestServices()
+	defer db.Close()
+
+	d := generateValidAuthor()
+	p := &d.author.Person
+	a := &d.author
+
+	mock.ExpectQuery("SELECT \\* from Autores").
+		WillReturnRows(d.authorRow)
+	mock.ExpectQuery("SELECT \\* FROM Pessoas").
+		WillReturnRows(d.personRow)
+
+	err := SelectAuthor(a)
+
+	require.NoError(t, err)
+	require.Equal(t, d.authorId, a.ID)
+	require.Equal(t, d.personId, p.ID)
 
 	err = mock.ExpectationsWereMet()
 	require.NoError(t, err)

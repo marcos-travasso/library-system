@@ -34,3 +34,19 @@ func InsertAuthor(db *sql.DB, a *models.Author) (err error) {
 	a.ID, err = result.LastInsertId()
 	return
 }
+
+func SelectAuthor(db *sql.DB, a *models.Author) (err error) {
+	row := db.QueryRow("SELECT * from Autores where idAutor == ?", a.ID)
+	if row.Err() != nil {
+		log.Println("select author error: " + row.Err().Error())
+		return row.Err()
+	}
+
+	err = row.Scan(&a.ID, &a.Person.ID)
+	if err != nil {
+		log.Println("scan author error: " + err.Error())
+		return
+	}
+
+	return
+}

@@ -87,7 +87,7 @@ func Test_SelectAuthor_ValidAuthor(t *testing.T) {
 	p := &d.author.Person
 	a := &d.author
 
-	mock.ExpectQuery("SELECT \\* from Autores").
+	mock.ExpectQuery("SELECT \\* FROM Autores").
 		WillReturnRows(d.authorRow)
 	mock.ExpectQuery("SELECT \\* FROM Pessoas").
 		WillReturnRows(d.personRow)

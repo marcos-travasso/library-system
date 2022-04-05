@@ -36,7 +36,7 @@ func InsertAuthor(db *sql.DB, a *models.Author) (err error) {
 }
 
 func SelectAuthor(db *sql.DB, a *models.Author) (err error) {
-	row := db.QueryRow("SELECT * from Autores where idAutor == ?", a.ID)
+	row := db.QueryRow("SELECT * FROM Autores where idAutor == ?", a.ID)
 	if row.Err() != nil {
 		log.Println("select author error: " + row.Err().Error())
 		return row.Err()

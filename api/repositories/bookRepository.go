@@ -17,23 +17,33 @@ func InsertBook(db *sql.DB, b *models.Book) (err error) {
 	return
 }
 
-func SelectBook(db *sql.DB, b *models.Book) (models.Book, error) {
-	var book models.Book
-
-	//TODO remove this horrendous query and splice into 3 functions (selectBook, selectAuthor and selectGenres)
-	row := db.QueryRow("SELECT idLivro, titulo, ano, paginas, autor, idPessoa, nome, genero, nascimento FROM (Livros INNER JOIN Autores A on Livros.autor = A.idAutor) INNER JOIN Pessoas on pessoa = Pessoas.idPessoa WHERE idLivro = ?", b.ID)
+func SelectBook(db *sql.DB, b *models.Book) (err error) {
+	row := db.QueryRow("SELECT * FROM Livros WHERE idLivro = ?", b.ID)
 	if row.Err() != nil {
 		log.Println("select book error: " + row.Err().Error())
-		return book, row.Err()
+		return row.Err()
 	}
 
-	err := row.Scan(&book.ID, &book.Title, &book.Year, &book.Pages, &book.Author.ID, &book.Author.Person.ID, &book.Author.Person.Name, &book.Author.Person.Gender, &book.Author.Person.Birthday)
+	err = row.Scan(&b.ID, &b.Title, &b.Year, &b.Author.ID, &b.Pages)
 	if err != nil {
 		log.Println("scan book error: " + err.Error())
-		return book, row.Err()
+		return
 	}
-	//TODO select genres
-	return book, nil
+
+	//TODO change this (add column genre and remove bookgenre table)
+	row = db.QueryRow("SELECT * FROM generos_dos_livros where livro = ?", b.ID)
+	if row.Err() != nil {
+		log.Println("select book genre error: " + row.Err().Error())
+		return row.Err()
+	}
+
+	err = row.Scan(&b.ID, &b.Genre.ID)
+	if err != nil {
+		log.Println("scan book genre error: " + err.Error())
+		return
+	}
+
+	return
 }
 
 func SelectBooks(db *sql.DB) ([]models.Book, error) {

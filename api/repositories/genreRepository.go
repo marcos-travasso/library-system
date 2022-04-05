@@ -35,7 +35,7 @@ func InsertGenre(db *sql.DB, g *models.Genre) (err error) {
 }
 
 func SelectGenre(db *sql.DB, g *models.Genre) (err error) {
-	row := db.QueryRow("SELECT * from Generos where idGenero == ?", g.ID)
+	row := db.QueryRow("SELECT * FROM Generos where idGenero == ?", g.ID)
 	if row.Err() != nil {
 		log.Println("select genre error: " + row.Err().Error())
 		return row.Err()

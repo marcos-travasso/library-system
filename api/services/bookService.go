@@ -33,3 +33,26 @@ func InsertBook(b *models.Book) (err error) {
 
 	return
 }
+
+func SelectBook(b *models.Book) (err error) {
+	//TODO testa isso (boa sorte tentando usar o Dummy pra isso, mas dai faz isso e tenta fazer o mvp do usuario emprestar um livro
+	err = repositories.SelectBook(db, b)
+	if err != nil {
+		log.Println("select book error: " + err.Error())
+		return
+	}
+
+	err = SelectGenre(&b.Genre)
+	if err != nil {
+		log.Println("select book genre error: " + err.Error())
+		return
+	}
+
+	err = SelectAuthor(&b.Author)
+	if err != nil {
+		log.Println("select book author error: " + err.Error())
+		return
+	}
+
+	return
+}

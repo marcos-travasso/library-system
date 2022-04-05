@@ -78,13 +78,14 @@ func Test_SelectUser_ValidUser(t *testing.T) {
 
 	d := generateValidUser()
 
-	mock.ExpectQuery("SELECT \\* FROM Usuarios").
+	mock.ExpectQuery("SELECT \\* FROM Usuarios").WithArgs(d.userId).
 		WillReturnRows(d.userRow)
-	mock.ExpectQuery("SELECT \\* FROM Enderecos").
+	mock.ExpectQuery("SELECT \\* FROM Enderecos").WithArgs(d.addressId).
 		WillReturnRows(d.addressRow)
-	mock.ExpectQuery("SELECT \\* FROM Pessoas").
+	mock.ExpectQuery("SELECT \\* FROM Pessoas").WithArgs(d.personId).
 		WillReturnRows(d.personRow)
 
+	d.user.ID = d.userId
 	err := SelectUser(&d.user)
 
 	require.NoError(t, err)

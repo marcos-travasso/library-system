@@ -74,7 +74,7 @@ func Test_SelectGenre_ValidGenre(t *testing.T) {
 	d := generateValidGenre()
 	g := &d.genre
 
-	mock.ExpectQuery("SELECT \\* from Generos").
+	mock.ExpectQuery("SELECT \\* FROM Generos").
 		WillReturnRows(d.genreRow)
 
 	err := SelectGenre(g)

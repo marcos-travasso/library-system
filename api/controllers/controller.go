@@ -10,4 +10,5 @@ func InitializeControllers() {
 	router = gin.Default()
 
 	initializeUserController()
+	initializeBookController()
 }

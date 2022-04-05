@@ -1,47 +1,39 @@
 package controllers
 
-//
-//import (
-//	"encoding/json"
-//	"fmt"
-//	"github.com/gin-gonic/gin"
-//	"github.com/marcos-travasso/library-system/models"
-//	"log"
-//	"net/http"
-//	"strconv"
-//)
-//
-//func setupBookEndpoints() {
-//	router.POST("/books", postBook)
-//	router.GET("/books", getBooks)
-//	router.GET("/books/:id", getBook)
-//	router.DELETE("/books/:id", deleteBook)
-//	router.PATCH("/books", updateBook)
-//}
-//
-//func postBook(c *gin.Context) {
-//	var book models.Book
-//
-//	if c.BindJSON(&book) == nil {
-//		id, err := dbDir.InsertBook(book)
-//		if err != nil {
-//			gotJSON, _ := json.Marshal(book)
-//			log.Printf("postBook(): %s", err)
-//			log.Printf("postBook(): %s", gotJSON)
-//
-//			c.String(http.StatusBadRequest, err.Error())
-//			return
-//		}
-//
-//		idString := fmt.Sprint(id)
-//
-//		c.String(http.StatusOK, idString)
-//		return
-//	}
-//
-//	log.Printf("postBook(): failed to parse JSON")
-//	c.String(http.StatusBadRequest, "failed to parse JSON")
-//}
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/marcos-travasso/library-system/models"
+	"github.com/marcos-travasso/library-system/services"
+	"log"
+	"net/http"
+)
+
+func initializeBookController() {
+	router.POST("/books", postBook)
+	//router.GET("/books", getBooks)
+	//router.GET("/books/:id", getBook)
+	//router.DELETE("/books/:id", deleteBook)
+	//router.PATCH("/books", updateBook)
+}
+
+func postBook(c *gin.Context) {
+	var book models.Book
+
+	if c.BindJSON(&book) == nil {
+		err := services.InsertBook(&book)
+		if err != nil {
+			c.String(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, book)
+		return
+	}
+
+	log.Printf("failed to parse JSON")
+	c.String(http.StatusBadRequest, "failed to parse JSON")
+}
+
 //
 //func getBooks(c *gin.Context) {
 //	books, err := dbDir.SelectBooks()

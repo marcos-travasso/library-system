@@ -13,3 +13,9 @@ func InitializeControllers() {
 	initializeBookController()
 	initializeLendingController()
 }
+
+func RunRouter() {
+	InitializeControllers()
+
+	router.Run()
+}

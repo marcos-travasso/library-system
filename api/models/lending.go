@@ -8,8 +8,3 @@ type Lending struct {
 	Returned   int        `json:"returned"`
 	Devolution Devolution `json:"devolution"`
 }
-
-type Devolution struct {
-	ID   int64  `json:"id"`
-	Date string `json:"date"`
-}

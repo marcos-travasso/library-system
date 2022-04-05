@@ -46,7 +46,7 @@ func RandomDate() string {
 }
 
 func RandomAddress() (a models.Address) {
-	a.ID = RandomInt(1, 256)
+	a.ID = RandomID()
 	a.CEP = strconv.Itoa(int(RandomInt(8, 8)))
 	a.Complement = RandomString(8)
 	a.City = RandomString(8)
@@ -58,7 +58,7 @@ func RandomAddress() (a models.Address) {
 }
 
 func RandomPerson() (p models.Person) {
-	p.ID = RandomInt(1, 256)
+	p.ID = RandomID()
 	p.Name = RandomString(8)
 	p.Gender = RandomString(1)
 	p.Birthday = RandomDate()
@@ -67,7 +67,7 @@ func RandomPerson() (p models.Person) {
 }
 
 func RandomUser() (u models.User) {
-	u.ID = RandomInt(1, 256)
+	u.ID = RandomID()
 	u.Person = RandomPerson()
 	u.Address = RandomAddress()
 	u.Email = RandomEmail()
@@ -80,21 +80,21 @@ func RandomUser() (u models.User) {
 }
 
 func RandomAuthor() (a models.Author) {
-	a.ID = RandomInt(1, 256)
+	a.ID = RandomID()
 	a.Person = RandomPerson()
 
 	return
 }
 
 func RandomGenre() (g models.Genre) {
-	g.ID = RandomInt(1, 256)
+	g.ID = RandomID()
 	g.Name = RandomName()
 
 	return
 }
 
 func RandomBook() (b models.Book) {
-	b.ID = RandomInt(1, 256)
+	b.ID = RandomID()
 	b.Title = RandomName()
 	b.Pages = int(RandomInt(1, 256))
 	b.Year = int(RandomInt(1000, 3000))
@@ -102,4 +102,22 @@ func RandomBook() (b models.Book) {
 	b.Genre = RandomGenre()
 
 	return
+}
+
+func RandomLending() (l models.Lending) {
+	l.ID = RandomID()
+	l.User = RandomUser()
+	l.Book = RandomBook()
+	l.LendDay = RandomDate()
+	l.Returned = 0
+	l.Devolution = models.Devolution{
+		ID:   RandomID(),
+		Date: RandomDate(),
+	}
+
+	return
+}
+
+func RandomID() int64 {
+	return RandomInt(1, 1024)
 }

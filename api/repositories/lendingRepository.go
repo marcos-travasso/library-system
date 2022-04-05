@@ -3,11 +3,18 @@ package repositories
 import (
 	"database/sql"
 	"github.com/marcos-travasso/library-system/models"
+	"log"
 )
 
-func InsertLending(db *sql.DB, l models.Lending) (int, error) {
-	//TODO
-	return 0, nil
+func InsertLending(db *sql.DB, l *models.Lending) (err error) {
+	result, err := db.Exec("INSERT INTO emprestimos(livro, usuario, datadopedido) values (?, ?, ?)", l.Book.ID, l.User.ID, l.LendDay)
+	if err != nil {
+		log.Println("insert lending error: " + err.Error())
+		return
+	}
+
+	l.ID, err = result.LastInsertId()
+	return
 }
 
 func SelectLending(db *sql.DB, l models.Lending) (models.Lending, error) {

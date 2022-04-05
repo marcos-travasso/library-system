@@ -34,9 +34,9 @@ func Test_InsertGenre_ValidGenre(t *testing.T) {
 	d := generateValidGenre()
 	g := &d.genre
 
-	mock.ExpectQuery("SELECT").WithArgs(g.Name).
+	Mock.ExpectQuery("SELECT").WithArgs(g.Name).
 		WillReturnRows(sqlmock.NewRows([]string{}))
-	mock.ExpectExec("INSERT INTO Generos").WithArgs(g.Name).
+	Mock.ExpectExec("INSERT INTO Generos").WithArgs(g.Name).
 		WillReturnResult(sqlmock.NewResult(d.genreId, 1))
 
 	err := InsertGenre(g)
@@ -44,7 +44,7 @@ func Test_InsertGenre_ValidGenre(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, d.genreId, g.ID)
 
-	err = mock.ExpectationsWereMet()
+	err = Mock.ExpectationsWereMet()
 	require.NoError(t, err)
 }
 
@@ -55,7 +55,7 @@ func Test_InsertGenre_AlreadyInserted(t *testing.T) {
 	d := generateValidGenre()
 	g := &d.genre
 
-	mock.ExpectQuery("SELECT").WithArgs(g.Name).
+	Mock.ExpectQuery("SELECT").WithArgs(g.Name).
 		WillReturnRows(sqlmock.NewRows([]string{"idGenero"}).AddRow(d.genreId))
 
 	err := InsertGenre(g)
@@ -63,7 +63,7 @@ func Test_InsertGenre_AlreadyInserted(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, d.genreId, g.ID)
 
-	err = mock.ExpectationsWereMet()
+	err = Mock.ExpectationsWereMet()
 	require.NoError(t, err)
 }
 
@@ -74,7 +74,7 @@ func Test_SelectGenre_ValidGenre(t *testing.T) {
 	d := generateValidGenre()
 	g := &d.genre
 
-	mock.ExpectQuery("SELECT \\* FROM Generos").
+	Mock.ExpectQuery("SELECT \\* FROM Generos").
 		WillReturnRows(d.genreRow)
 
 	err := SelectGenre(g)
@@ -82,6 +82,6 @@ func Test_SelectGenre_ValidGenre(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, d.genreId, g.ID)
 
-	err = mock.ExpectationsWereMet()
+	err = Mock.ExpectationsWereMet()
 	require.NoError(t, err)
 }

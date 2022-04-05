@@ -60,23 +60,23 @@ func Test_InsertBook_ValidBook(t *testing.T) {
 	b := &d.book
 
 	//Author queries
-	mock.ExpectQuery("SELECT").WithArgs(a.Person.Name).
+	Mock.ExpectQuery("SELECT").WithArgs(a.Person.Name).
 		WillReturnRows(sqlmock.NewRows([]string{}))
-	mock.ExpectExec("INSERT INTO Pessoas").WithArgs(a.Person.Name, a.Person.Gender, a.Person.Birthday).
+	Mock.ExpectExec("INSERT INTO Pessoas").WithArgs(a.Person.Name, a.Person.Gender, a.Person.Birthday).
 		WillReturnResult(sqlmock.NewResult(a.Person.ID, 1))
-	mock.ExpectExec("INSERT INTO Autores").WithArgs(a.Person.ID).
+	Mock.ExpectExec("INSERT INTO Autores").WithArgs(a.Person.ID).
 		WillReturnResult(sqlmock.NewResult(d.authorId, 1))
 
 	//Genre queries
-	mock.ExpectQuery("SELECT").WithArgs(g.Name).
+	Mock.ExpectQuery("SELECT").WithArgs(g.Name).
 		WillReturnRows(sqlmock.NewRows([]string{}))
-	mock.ExpectExec("INSERT INTO Generos").WithArgs(g.Name).
+	Mock.ExpectExec("INSERT INTO Generos").WithArgs(g.Name).
 		WillReturnResult(sqlmock.NewResult(d.genreId, 1))
 
 	//Book queries
-	mock.ExpectExec("INSERT INTO Livros").WithArgs(b.Title, b.Year, d.authorId, b.Pages).
+	Mock.ExpectExec("INSERT INTO Livros").WithArgs(b.Title, b.Year, d.authorId, b.Pages).
 		WillReturnResult(sqlmock.NewResult(d.bookId, 1))
-	mock.ExpectExec("INSERT INTO generos_dos_livros").WithArgs(d.bookId, d.genreId).
+	Mock.ExpectExec("INSERT INTO generos_dos_livros").WithArgs(d.bookId, d.genreId).
 		WillReturnResult(sqlmock.NewResult(d.bookId, 1))
 
 	err := InsertBook(b)
@@ -86,7 +86,7 @@ func Test_InsertBook_ValidBook(t *testing.T) {
 	require.Equal(t, d.genreId, g.ID)
 	require.Equal(t, d.authorId, a.ID)
 
-	err = mock.ExpectationsWereMet()
+	err = Mock.ExpectationsWereMet()
 	require.NoError(t, err)
 }
 
@@ -96,15 +96,15 @@ func Test_SelectBook_ValidBook(t *testing.T) {
 
 	d := generateValidBook()
 
-	mock.ExpectQuery("SELECT \\* FROM Livros").WithArgs(d.bookId).
+	Mock.ExpectQuery("SELECT \\* FROM Livros").WithArgs(d.bookId).
 		WillReturnRows(d.bookRow)
-	mock.ExpectQuery("SELECT \\* FROM generos_dos_livros").WithArgs(d.bookId).
+	Mock.ExpectQuery("SELECT \\* FROM generos_dos_livros").WithArgs(d.bookId).
 		WillReturnRows(d.linkGenreRow)
-	mock.ExpectQuery("SELECT \\* FROM Generos").WithArgs(d.genreId).
+	Mock.ExpectQuery("SELECT \\* FROM Generos").WithArgs(d.genreId).
 		WillReturnRows(d.genreRow)
-	mock.ExpectQuery("SELECT \\* FROM Autores").WithArgs(d.authorId).
+	Mock.ExpectQuery("SELECT \\* FROM Autores").WithArgs(d.authorId).
 		WillReturnRows(d.authorRow)
-	mock.ExpectQuery("SELECT \\* FROM Pessoas").WithArgs(d.book.Author.Person.ID).
+	Mock.ExpectQuery("SELECT \\* FROM Pessoas").WithArgs(d.book.Author.Person.ID).
 		WillReturnRows(d.personRow)
 
 	d.book.ID = d.bookId
@@ -115,7 +115,7 @@ func Test_SelectBook_ValidBook(t *testing.T) {
 	require.Equal(t, d.genreId, d.book.Genre.ID)
 	require.Equal(t, d.authorId, d.book.Author.ID)
 
-	err = mock.ExpectationsWereMet()
+	err = Mock.ExpectationsWereMet()
 	require.NoError(t, err)
 	return
 }

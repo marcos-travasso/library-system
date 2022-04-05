@@ -31,7 +31,9 @@ func SelectUser(db *sql.DB, user *models.User) (err error) {
 		return
 	}
 
-	user.CreationDate = user.CreationDate[:10]
+	if len(user.CreationDate) > 10 {
+		user.CreationDate = user.CreationDate[:10]
+	}
 	return
 }
 

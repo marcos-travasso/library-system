@@ -35,9 +35,9 @@ func Test_InsertLending_ValidLending(t *testing.T) {
 	d := generateValidLending()
 	l := &d.lending
 
-	mock.ExpectExec("INSERT INTO emprestimos").WithArgs(l.Book.ID, l.User.ID, l.LendDay).
+	Mock.ExpectExec("INSERT INTO emprestimos").WithArgs(l.Book.ID, l.User.ID, l.LendDay).
 		WillReturnResult(sqlmock.NewResult(d.lendingId, 1))
-	mock.ExpectExec("INSERT INTO devolucoes").WithArgs(d.lendingId, l.Devolution.Date).
+	Mock.ExpectExec("INSERT INTO devolucoes").WithArgs(d.lendingId, l.Devolution.Date).
 		WillReturnResult(sqlmock.NewResult(d.devolutionId, 1))
 
 	err := InsertLending(l)
@@ -46,6 +46,6 @@ func Test_InsertLending_ValidLending(t *testing.T) {
 	require.Equal(t, d.lendingId, l.ID)
 	require.Equal(t, d.devolutionId, l.Devolution.ID)
 
-	err = mock.ExpectationsWereMet()
+	err = Mock.ExpectationsWereMet()
 	require.NoError(t, err)
 }

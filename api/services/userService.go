@@ -21,7 +21,7 @@ func InsertUser(u *models.User) (err error) {
 
 	err = repositories.InsertUser(db, u)
 	if err != nil {
-		log.Println("insert user error: " + err.Error())
+		log.Println("insert User error: " + err.Error())
 		return
 	}
 
@@ -31,7 +31,7 @@ func InsertUser(u *models.User) (err error) {
 func SelectUser(u *models.User) (err error) {
 	err = repositories.SelectUser(db, u)
 	if err != nil {
-		log.Println("select user error: " + err.Error())
+		log.Println("select User error: " + err.Error())
 		return
 	}
 

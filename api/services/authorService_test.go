@@ -41,11 +41,11 @@ func Test_InsertAuthor_ValidAuthor(t *testing.T) {
 	p := &d.author.Person
 	a := &d.author
 
-	mock.ExpectQuery("SELECT").WithArgs(p.Name).
+	Mock.ExpectQuery("SELECT").WithArgs(p.Name).
 		WillReturnRows(sqlmock.NewRows([]string{}))
-	mock.ExpectExec("INSERT INTO Pessoas").WithArgs(p.Name, p.Gender, p.Birthday).
+	Mock.ExpectExec("INSERT INTO Pessoas").WithArgs(p.Name, p.Gender, p.Birthday).
 		WillReturnResult(sqlmock.NewResult(d.personId, 1))
-	mock.ExpectExec("INSERT INTO Autores").WithArgs(d.personId).
+	Mock.ExpectExec("INSERT INTO Autores").WithArgs(d.personId).
 		WillReturnResult(sqlmock.NewResult(d.authorId, 1))
 
 	err := InsertAuthor(a)
@@ -54,7 +54,7 @@ func Test_InsertAuthor_ValidAuthor(t *testing.T) {
 	require.Equal(t, d.personId, p.ID)
 	require.Equal(t, d.authorId, a.ID)
 
-	err = mock.ExpectationsWereMet()
+	err = Mock.ExpectationsWereMet()
 	require.NoError(t, err)
 }
 
@@ -66,7 +66,7 @@ func Test_InsertAuthor_AlreadyInserted(t *testing.T) {
 	p := &d.author.Person
 	a := &d.author
 
-	mock.ExpectQuery("SELECT").WithArgs(p.Name).
+	Mock.ExpectQuery("SELECT").WithArgs(p.Name).
 		WillReturnRows(sqlmock.NewRows([]string{"idAutor", "pessoa"}).AddRow(d.authorId, d.personId))
 
 	err := InsertAuthor(a)
@@ -75,7 +75,7 @@ func Test_InsertAuthor_AlreadyInserted(t *testing.T) {
 	require.Equal(t, d.personId, a.Person.ID)
 	require.Equal(t, d.authorId, a.ID)
 
-	err = mock.ExpectationsWereMet()
+	err = Mock.ExpectationsWereMet()
 	require.NoError(t, err)
 }
 
@@ -87,9 +87,9 @@ func Test_SelectAuthor_ValidAuthor(t *testing.T) {
 	p := &d.author.Person
 	a := &d.author
 
-	mock.ExpectQuery("SELECT \\* FROM Autores").
+	Mock.ExpectQuery("SELECT \\* FROM Autores").
 		WillReturnRows(d.authorRow)
-	mock.ExpectQuery("SELECT \\* FROM Pessoas").
+	Mock.ExpectQuery("SELECT \\* FROM Pessoas").
 		WillReturnRows(d.personRow)
 
 	err := SelectAuthor(a)
@@ -98,6 +98,6 @@ func Test_SelectAuthor_ValidAuthor(t *testing.T) {
 	require.Equal(t, d.authorId, a.ID)
 	require.Equal(t, d.personId, p.ID)
 
-	err = mock.ExpectationsWereMet()
+	err = Mock.ExpectationsWereMet()
 	require.NoError(t, err)
 }

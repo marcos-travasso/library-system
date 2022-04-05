@@ -8,7 +8,7 @@ import (
 )
 
 var db *sql.DB
-var mock sqlmock.Sqlmock
+var Mock sqlmock.Sqlmock
 
 func InitializeServices() {
 	db = repositories.InitializeDatabase()
@@ -16,7 +16,7 @@ func InitializeServices() {
 
 func InitializeTestServices() {
 	var err error
-	db, mock, err = sqlmock.New()
+	db, Mock, err = sqlmock.New()
 	if err != nil {
 		log.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}

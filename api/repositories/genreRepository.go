@@ -34,6 +34,22 @@ func InsertGenre(db *sql.DB, g *models.Genre) (err error) {
 	return
 }
 
+func SelectGenre(db *sql.DB, g *models.Genre) (err error) {
+	row := db.QueryRow("SELECT * from Generos where idGenero == ?", g.ID)
+	if row.Err() != nil {
+		log.Println("select genre error: " + row.Err().Error())
+		return row.Err()
+	}
+
+	err = row.Scan(&g.ID, &g.Name)
+	if err != nil {
+		log.Println("scan genre error: " + err.Error())
+		return
+	}
+
+	return
+}
+
 func LinkGenre(db *sql.DB, b *models.Book) (err error) {
 	_, err = db.Exec("INSERT INTO generos_dos_livros(livro, genero) VALUES (?, ?)", b.ID, b.Genre.ID)
 	if err != nil {

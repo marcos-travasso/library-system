@@ -25,3 +25,13 @@ func InsertGenre(g *models.Genre) (err error) {
 
 	return
 }
+
+func SelectGenre(g *models.Genre) (err error) {
+	err = repositories.SelectGenre(db, g)
+	if err != nil {
+		log.Println("select genre error: " + err.Error())
+		return
+	}
+
+	return
+}

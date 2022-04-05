@@ -89,3 +89,10 @@ func RandomAuthor() (a models.Author) {
 
 	return
 }
+
+func RandomGenre() (g models.Genre) {
+	g.ID = RandomInt(1, 256)
+	g.Name = RandomName()
+
+	return
+}

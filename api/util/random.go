@@ -70,9 +70,7 @@ func RandomPerson() models.Person {
 	return p
 }
 
-func RandomUser() models.User {
-	var u models.User
-
+func RandomUser() (u models.User) {
 	u.ID = RandomInt(1, 256)
 	u.Person = RandomPerson()
 	u.Address = RandomAddress()
@@ -83,4 +81,11 @@ func RandomUser() models.User {
 	u.CreationDate = RandomDate()
 
 	return u
+}
+
+func RandomAuthor() (a models.Author) {
+	a.ID = RandomInt(1, 256)
+	a.Person = RandomPerson()
+
+	return
 }

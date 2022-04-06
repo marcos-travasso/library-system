@@ -76,7 +76,7 @@ func DeleteBook(db *sql.DB, b *models.Book) error {
 	return nil
 }
 
-func UpdateBook(db *sql.DB, b *models.Book) error {
-	//TODO
-	return nil
-}
+//func UpdateBook(db *sql.DB, b *models.Book) error {
+//	//TODO
+//	return nil
+//}

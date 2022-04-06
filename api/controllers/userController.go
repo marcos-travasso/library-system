@@ -6,14 +6,14 @@ import (
 	"github.com/marcos-travasso/library-system/services"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func initializeUserController() {
 	router.POST("/users", postUser)
+	router.GET("/users/:id", getUser)
 	//router.GET("/users", getUsers)
-	//router.GET("/users/:id", getUser)
 	//router.DELETE("/users/:id", deleteUser)
-	//router.PATCH("/users", updateUser)
 }
 
 func postUser(c *gin.Context) {
@@ -33,6 +33,24 @@ func postUser(c *gin.Context) {
 
 	log.Printf("failed to parse JSON")
 	c.String(http.StatusBadRequest, "failed to parse JSON")
+}
+
+func getUser(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
+	}
+	receivedUser := models.User{ID: int64(id)}
+
+	err = services.SelectUser(&receivedUser)
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, receivedUser)
+	return
 }
 
 //
@@ -70,45 +88,3 @@ func postUser(c *gin.Context) {
 //	c.String(http.StatusOK, "Success")
 //}
 //
-//func getUser(c *gin.Context) {
-//	id, err := strconv.Atoi(c.Param("id"))
-//	if err != nil {
-//		log.Printf("getUser(): %s", err)
-//
-//		c.String(http.StatusBadRequest, err.Error())
-//		return
-//	}
-//	receivedUser := models.User{ID: id}
-//
-//	user, err := dbDir.SelectUser(receivedUser)
-//	if err != nil {
-//		log.Printf("getUser(): %s", err)
-//
-//		c.String(http.StatusInternalServerError, err.Error())
-//		return
-//	}
-//
-//	c.IndentedJSON(http.StatusOK, user)
-//}
-//
-//func updateUser(c *gin.Context) {
-//	var user models.User
-//
-//	if c.BindJSON(&user) == nil {
-//		err := dbDir.UpdateUser(user)
-//		if err != nil {
-//			gotJSON, _ := json.Marshal(user)
-//			log.Printf("updateUser(): %s", err)
-//			log.Printf("updateUser(): %s", gotJSON)
-//
-//			c.String(http.StatusBadRequest, err.Error())
-//			return
-//		}
-//
-//		c.String(http.StatusOK, "Success")
-//		return
-//	}
-//
-//	log.Printf("updateUser(): failed to parse JSON")
-//	c.String(http.StatusBadRequest, "Fail to parse JSON")
-//}

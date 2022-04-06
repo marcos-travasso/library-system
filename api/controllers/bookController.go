@@ -6,14 +6,14 @@ import (
 	"github.com/marcos-travasso/library-system/services"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func initializeBookController() {
 	router.POST("/books", postBook)
+	router.GET("/books/:id", getBook)
 	//router.GET("/books", getBooks)
-	//router.GET("/books/:id", getBook)
 	//router.DELETE("/books/:id", deleteBook)
-	//router.PATCH("/books", updateBook)
 }
 
 func postBook(c *gin.Context) {
@@ -32,6 +32,23 @@ func postBook(c *gin.Context) {
 
 	log.Printf("failed to parse JSON")
 	c.String(http.StatusBadRequest, "failed to parse JSON")
+}
+
+func getBook(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
+	}
+	receivedBook := models.Book{ID: int64(id)}
+
+	err = services.SelectBook(&receivedBook)
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, receivedBook)
 }
 
 //
@@ -68,46 +85,3 @@ func postBook(c *gin.Context) {
 //	c.String(http.StatusOK, "Success")
 //}
 //
-//func getBook(c *gin.Context) {
-//	id, err := strconv.Atoi(c.Param("id"))
-//	if err != nil {
-//		log.Printf("getBook(): %s", err)
-//		c.String(http.StatusBadRequest, err.Error())
-//		return
-//	}
-//	receivedBook := models.Book{ID: id}
-//
-//	book, err := dbDir.SelectBook(receivedBook)
-//	if err != nil {
-//		gotJSON, _ := json.Marshal(book)
-//		log.Printf("getBook(): %s", err)
-//		log.Printf("getBook(): %s", gotJSON)
-//
-//		c.String(http.StatusInternalServerError, err.Error())
-//		return
-//	}
-//
-//	c.IndentedJSON(http.StatusOK, book)
-//}
-//
-//func updateBook(c *gin.Context) {
-//	var book models.Book
-//
-//	if c.BindJSON(&book) == nil {
-//		err := dbDir.UpdateBook(book)
-//		if err != nil {
-//			gotJSON, _ := json.Marshal(book)
-//			log.Printf("updateBook(): %s", err)
-//			log.Printf("updateBook(): %s", gotJSON)
-//
-//			c.String(http.StatusBadRequest, err.Error())
-//			return
-//		}
-//
-//		c.String(http.StatusOK, "Success")
-//		return
-//	}
-//
-//	log.Printf("postBook(): failed to parse JSON")
-//	c.String(http.StatusBadRequest, "failed to parse JSON")
-//}

@@ -68,7 +68,7 @@ func DeleteUser(db *sql.DB, u *models.User) (err error) {
 	return nil
 }
 
-func UpdateUser(db *sql.DB, u *models.User) (err error) {
-	//TODO
-	return nil
-}
+//func UpdateUser(db *sql.DB, u *models.User) (err error) {
+//	//TODO
+//	return nil
+//}

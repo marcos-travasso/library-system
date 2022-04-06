@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"testing"
 )
 
@@ -54,6 +55,43 @@ func Test_PostBook_ShouldReturnOk(t *testing.T) {
 	require.Equal(t, d.BookId, receivedBook.ID)
 	require.Equal(t, d.AuthorId, receivedBook.Author.ID)
 	require.Equal(t, d.GenreId, receivedBook.Genre.ID)
+
+	err := services.Mock.ExpectationsWereMet()
+	require.NoError(t, err)
+}
+
+func Test_GetBook_ShouldReturnOk(t *testing.T) {
+	//GIVEN
+	InitializeControllers()
+	services.InitializeTestServices()
+
+	d := services.GenerateValidBook()
+
+	services.Mock.ExpectQuery("SELECT \\* FROM Livros").
+		WillReturnRows(d.BookRow)
+	services.Mock.ExpectQuery("SELECT \\* FROM generos_dos_livros").
+		WillReturnRows(d.LinkGenreRow)
+	services.Mock.ExpectQuery("SELECT \\* FROM Generos").
+		WillReturnRows(d.GenreRow)
+	services.Mock.ExpectQuery("SELECT \\* FROM Autores").
+		WillReturnRows(d.AuthorRow)
+	services.Mock.ExpectQuery("SELECT \\* FROM Pessoas").
+		WillReturnRows(d.PersonRow)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodGet, "/books/"+strconv.Itoa(int(d.BookId)), nil)
+
+	//WHEN
+	router.ServeHTTP(w, req)
+
+	//THEN
+	var receivedBook models.Book
+	_ = json.Unmarshal(w.Body.Bytes(), &receivedBook)
+
+	require.Equal(t, http.StatusOK, w.Code)
+	require.Equal(t, d.BookId, receivedBook.ID)
+	require.Equal(t, d.GenreId, receivedBook.Genre.ID)
+	require.Equal(t, d.AuthorId, receivedBook.Author.ID)
 
 	err := services.Mock.ExpectationsWereMet()
 	require.NoError(t, err)

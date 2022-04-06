@@ -21,25 +21,25 @@ Once the api.go code is build, the following routes are opened:
 ###  `/users`
  - `GET` - Get a list of all created users, returned as JSON.
  - `POST` - Add a new user from request data sent as JSON.
- - `PATCH` - Update a specific created user information with the new JSON data.
+ - ~`PATCH` - Update a specific created user information with the new JSON data.~
 ### `/users/:id`
 - `GET`- Get a user by its ID, returned as JSON.
-- `DELETE`- Delete a user by its ID.
+- ~`DELETE`- Delete a user by its ID.~
 
 ###  `/books`
  - `GET` - Get a list of all books, returned as JSON.
  - `POST` - Add a new book from request data sent as JSON.
- - `PATCH` - Update a specific created book information with the new JSON data.
+ - ~`PATCH` - Update a specific created book information with the new JSON data.~
 ### `/books/:id`
 - `GET`- Get a book by its ID, returned as JSON.
-- `DELETE`- Delete a book by its ID.
+- ~`DELETE`- Delete a book by its ID.~
 
 ###  `/lendings`
  - `GET` - Get a list of all lendings, returned as JSON.
  - `POST` - Add a new lending from request data sent as JSON.
 ### `/lendings/:id`
-- `GET`- Get a lending by its ID, returned as JSON.
-- `PATCH` - Return the sent ID's lending.
+- ~`GET`- Get a lending by its ID, returned as JSON.~
+- ~`PATCH` - Return the sent ID's lending.~
 
 
 ## Struct's format

@@ -49,36 +49,40 @@ func GenerateValidBook() *DummyBookParams {
 }
 
 func (d *DummyBookParams) MockInsertValues(mock sqlmock.Sqlmock) {
+	a := &d.Book.Author
+	g := &d.Book.Genre
+	b := &d.Book
+
 	//Author queries
-	mock.ExpectQuery("SELECT").
+	mock.ExpectQuery("SELECT").WithArgs(a.Person.Name).
 		WillReturnRows(sqlmock.NewRows([]string{}))
-	mock.ExpectExec("INSERT INTO Pessoas").
+	mock.ExpectExec("INSERT INTO Pessoas").WithArgs(a.Person.Name, a.Person.Gender, a.Person.Birthday).
 		WillReturnResult(sqlmock.NewResult(d.Book.Author.Person.ID, 1))
-	mock.ExpectExec("INSERT INTO Autores").
+	mock.ExpectExec("INSERT INTO Autores").WithArgs(a.Person.ID).
 		WillReturnResult(sqlmock.NewResult(d.AuthorId, 1))
 
 	//Genre queries
-	mock.ExpectQuery("SELECT").
+	mock.ExpectQuery("SELECT").WithArgs(g.Name).
 		WillReturnRows(sqlmock.NewRows([]string{}))
-	mock.ExpectExec("INSERT INTO Generos").
+	mock.ExpectExec("INSERT INTO Generos").WithArgs(g.Name).
 		WillReturnResult(sqlmock.NewResult(d.GenreId, 1))
 
 	//Book queries
-	mock.ExpectExec("INSERT INTO Livros").
+	mock.ExpectExec("INSERT INTO Livros").WithArgs(b.Title, b.Year, d.AuthorId, b.Pages).
 		WillReturnResult(sqlmock.NewResult(d.BookId, 1))
-	mock.ExpectExec("INSERT INTO generos_dos_livros").
+	mock.ExpectExec("INSERT INTO generos_dos_livros").WithArgs(d.BookId, d.GenreId).
 		WillReturnResult(sqlmock.NewResult(d.BookId, 1))
 }
 
 func (d *DummyBookParams) MockSelectValues(mock sqlmock.Sqlmock) {
-	mock.ExpectQuery("SELECT \\* FROM Livros").
+	mock.ExpectQuery("SELECT \\* FROM Livros").WithArgs(d.BookId).
 		WillReturnRows(d.BookRow)
-	mock.ExpectQuery("SELECT \\* FROM generos_dos_livros").
+	mock.ExpectQuery("SELECT \\* FROM generos_dos_livros").WithArgs(d.BookId).
 		WillReturnRows(d.LinkGenreRow)
-	mock.ExpectQuery("SELECT \\* FROM Generos").
+	mock.ExpectQuery("SELECT \\* FROM Generos").WithArgs(d.GenreId).
 		WillReturnRows(d.GenreRow)
-	mock.ExpectQuery("SELECT \\* FROM Autores").
+	mock.ExpectQuery("SELECT \\* FROM Autores").WithArgs(d.AuthorId).
 		WillReturnRows(d.AuthorRow)
-	mock.ExpectQuery("SELECT \\* FROM Pessoas").
+	mock.ExpectQuery("SELECT \\* FROM Pessoas").WithArgs(d.Book.Author.Person.ID).
 		WillReturnRows(d.PersonRow)
 }

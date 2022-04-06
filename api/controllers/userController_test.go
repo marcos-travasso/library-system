@@ -99,6 +99,14 @@ func Test_GetUsers_ShouldReturnOk(t *testing.T) {
 	require.Equal(t, http.StatusOK, w.Code)
 	require.Equal(t, 2, len(receivedUsers))
 
+	require.Equal(t, d1.UserId, receivedUsers[0].ID)
+	require.Equal(t, d1.PersonId, receivedUsers[0].Person.ID)
+	require.Equal(t, d1.AddressId, receivedUsers[0].Address.ID)
+
+	require.Equal(t, d2.UserId, receivedUsers[1].ID)
+	require.Equal(t, d2.PersonId, receivedUsers[1].Person.ID)
+	require.Equal(t, d2.AddressId, receivedUsers[1].Address.ID)
+
 	err := services.Mock.ExpectationsWereMet()
 	require.NoError(t, err)
 }

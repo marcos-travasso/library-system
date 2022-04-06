@@ -85,5 +85,3 @@ func Test_SelectUsers(t *testing.T) {
 	err = Mock.ExpectationsWereMet()
 	require.NoError(t, err)
 }
-
-//TODO more tests

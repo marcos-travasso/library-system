@@ -7,7 +7,10 @@ import (
 )
 
 func InsertLending(l *models.Lending) (err error) {
-	//TODO verify if user already has a lending
+	if err = repositories.IsLending(db, l); err != nil {
+		return
+	}
+
 	err = repositories.InsertLending(db, l)
 	if err != nil {
 		log.Println("insert lending error: " + err.Error())

@@ -10,6 +10,8 @@ type DummyLendingParams struct {
 	Lending      models.Lending
 	LendingId    int64
 	DevolutionId int64
+	BookId       int64
+	UserId       int64
 }
 
 func GenerateValidLending() *DummyLendingParams {
@@ -18,6 +20,8 @@ func GenerateValidLending() *DummyLendingParams {
 
 	d.LendingId = l.ID
 	d.DevolutionId = l.Devolution.ID
+	d.BookId = l.Book.ID
+	d.UserId = l.User.ID
 
 	l.ID = 0
 	l.Devolution.ID = 0

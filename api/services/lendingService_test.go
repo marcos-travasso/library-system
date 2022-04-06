@@ -13,17 +13,49 @@ func Test_InsertLending_ValidLending(t *testing.T) {
 
 	d := fixtures.GenerateValidLending()
 	l := &d.Lending
-
-	Mock.ExpectExec("INSERT INTO emprestimos").WithArgs(l.Book.ID, l.User.ID, l.LendDay).
-		WillReturnResult(sqlmock.NewResult(d.LendingId, 1))
-	Mock.ExpectExec("INSERT INTO devolucoes").WithArgs(d.LendingId, l.Devolution.Date).
-		WillReturnResult(sqlmock.NewResult(d.DevolutionId, 1))
+	Mock.ExpectQuery("SELECT livro, usuario").WithArgs(l.Book.ID, l.User.ID).
+		WillReturnRows(sqlmock.NewRows([]string{"", ""}))
+	d.MockInsertValues(Mock)
 
 	err := InsertLending(l)
 
 	require.NoError(t, err)
 	require.Equal(t, d.LendingId, l.ID)
 	require.Equal(t, d.DevolutionId, l.Devolution.ID)
+
+	err = Mock.ExpectationsWereMet()
+	require.NoError(t, err)
+}
+
+func Test_InsertLending_BookIsLending(t *testing.T) {
+	InitializeTestServices()
+	defer db.Close()
+
+	d := fixtures.GenerateValidLending()
+	l := &d.Lending
+	Mock.ExpectQuery("SELECT livro, usuario").WithArgs(l.Book.ID, l.User.ID).
+		WillReturnRows(sqlmock.NewRows([]string{"", ""}).AddRow(l.Book.ID, -1))
+
+	err := InsertLending(l)
+
+	require.EqualError(t, err, "book already have lending")
+
+	err = Mock.ExpectationsWereMet()
+	require.NoError(t, err)
+}
+
+func Test_InsertLending_UserHasLending(t *testing.T) {
+	InitializeTestServices()
+	defer db.Close()
+
+	d := fixtures.GenerateValidLending()
+	l := &d.Lending
+	Mock.ExpectQuery("SELECT livro, usuario").WithArgs(l.Book.ID, l.User.ID).
+		WillReturnRows(sqlmock.NewRows([]string{"", ""}).AddRow(-1, l.User.ID))
+
+	err := InsertLending(l)
+
+	require.EqualError(t, err, "user already have lending")
 
 	err = Mock.ExpectationsWereMet()
 	require.NoError(t, err)

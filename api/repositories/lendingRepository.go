@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"database/sql"
+	"errors"
 	"github.com/marcos-travasso/library-system/models"
 	"log"
 )
@@ -17,28 +18,32 @@ func InsertLending(db *sql.DB, l *models.Lending) (err error) {
 	return
 }
 
-func SelectLending(db *sql.DB, l models.Lending) (models.Lending, error) {
-	//TODO
-	var lend models.Lending
-	return lend, nil
-}
+func IsLending(db *sql.DB, l *models.Lending) (err error) {
+	row := db.QueryRow("SELECT livro, usuario FROM emprestimos WHERE (livro == ? OR usuario == ?) AND devolvido == 0", l.Book.ID, l.User.ID)
+	if row.Err() != nil {
+		log.Println("check if lending exists error: " + row.Err().Error())
+		return row.Err()
+	}
 
-func SelectLendings(db *sql.DB) ([]models.Lending, error) {
-	//TODO
-	return nil, nil
-}
+	var bookId, userId int64
+	err = row.Scan(&bookId, &userId)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		log.Println("scan lending error: " + err.Error())
+		return
+	}
 
-func ReturnBook(db *sql.DB, l models.Lending) error {
-	//TODO
+	if !errors.Is(err, sql.ErrNoRows) {
+		if bookId == l.Book.ID {
+			return models.ErrorAlreadyLending("book")
+		} else {
+			return models.ErrorAlreadyLending("user")
+		}
+	}
+
 	return nil
 }
 
-func haveLending(db *sql.DB, u models.User) (bool, error) {
+func ReturnBook(db *sql.DB, l *models.Lending) error {
 	//TODO
-	return false, nil
-}
-
-func isLending(db *sql.DB, b models.Book) (bool, error) {
-	//TODO
-	return false, nil
+	return nil
 }

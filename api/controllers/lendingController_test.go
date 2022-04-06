@@ -3,6 +3,7 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/marcos-travasso/library-system/fixtures"
 	"github.com/marcos-travasso/library-system/models"
 	"github.com/marcos-travasso/library-system/services"
@@ -18,6 +19,9 @@ func Test_PostLending_ShouldReturnOk(t *testing.T) {
 	services.InitializeTestServices()
 
 	d := fixtures.GenerateValidLending()
+	l := &d.Lending
+	services.Mock.ExpectQuery("SELECT livro, usuario").WithArgs(l.Book.ID, l.User.ID).
+		WillReturnRows(sqlmock.NewRows([]string{"", ""}))
 	d.MockInsertValues(services.Mock)
 
 	lendingBody, _ := json.Marshal(d.Lending)
@@ -39,3 +43,5 @@ func Test_PostLending_ShouldReturnOk(t *testing.T) {
 	err := services.Mock.ExpectationsWereMet()
 	require.NoError(t, err)
 }
+
+//TODO test haslending (http response must be different)

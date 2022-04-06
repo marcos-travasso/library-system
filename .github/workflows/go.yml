@@ -10,6 +10,9 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./api
     steps:
     - uses: actions/checkout@v3
 
@@ -19,7 +22,7 @@ jobs:
         go-version: 1.17
 
     - name: Build
-      run: go build -v ./api/...
+      run: go build -v ./...
 
     - name: Test
-      run: go test -v ./api/...
+      run: go test -v ./...

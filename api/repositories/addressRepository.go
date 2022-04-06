@@ -43,12 +43,12 @@ func DeleteAddress(db *sql.DB, a *models.Address) (err error) {
 	return
 }
 
-func UpdateAddress(db *sql.DB, a *models.Address) (err error) {
-	_, err = db.Exec("UPDATE Enderecos SET CEP=?, cidade=?, bairro=?, rua=?, numero=?, complemento=? WHERE idEndereco = ?", a.CEP, a.City, a.Neighborhood, a.Street, a.Number, a.Complement, a.ID)
-	if err != nil {
-		log.Println("update address error: " + err.Error())
-		return
-	}
-
-	return
-}
+//func UpdateAddress(db *sql.DB, a *models.Address) (err error) {
+//	_, err = db.Exec("UPDATE Enderecos SET CEP=?, cidade=?, bairro=?, rua=?, numero=?, complemento=? WHERE idEndereco = ?", a.CEP, a.City, a.Neighborhood, a.Street, a.Number, a.Complement, a.ID)
+//	if err != nil {
+//		log.Println("update address error: " + err.Error())
+//		return
+//	}
+//
+//	return
+//}

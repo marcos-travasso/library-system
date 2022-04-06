@@ -43,12 +43,12 @@ func DeletePerson(db *sql.DB, p *models.Person) (err error) {
 	return
 }
 
-func UpdatePerson(db *sql.DB, p *models.Person) (err error) {
-	_, err = db.Exec("UPDATE Pessoas SET nome=?, genero=?, nascimento=? WHERE idPessoa = ?", p.Name, p.Gender, p.Birthday, p.ID)
-	if err != nil {
-		log.Println("update person error: " + err.Error())
-		return
-	}
-
-	return
-}
+//func UpdatePerson(db *sql.DB, p *models.Person) (err error) {
+//	_, err = db.Exec("UPDATE Pessoas SET nome=?, genero=?, nascimento=? WHERE idPessoa = ?", p.Name, p.Gender, p.Birthday, p.ID)
+//	if err != nil {
+//		log.Println("update person error: " + err.Error())
+//		return
+//	}
+//
+//	return
+//}

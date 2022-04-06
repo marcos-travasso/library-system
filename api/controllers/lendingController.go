@@ -10,8 +10,6 @@ import (
 
 func initializeLendingController() {
 	router.POST("/lendings", postLending)
-	//router.GET("/lendings", getLendings)
-	//router.GET("/lendings/:id", getLending)
 	//router.PATCH("/lendings/:id", returnLending)
 }
 
@@ -45,24 +43,6 @@ func postLending(c *gin.Context) {
 //	c.IndentedJSON(http.StatusOK, lendings)
 //}
 //
-//func getLending(c *gin.Context) {
-//	id, err := strconv.Atoi(c.Param("id"))
-//	if err != nil {
-//		log.Printf("getLending(): %s", err)
-//		c.String(http.StatusBadRequest, err.Error())
-//		return
-//	}
-//	receivedLending := models.Lending{ID: id}
-//
-//	lending, err := dbDir.SelectLending(receivedLending)
-//	if err != nil {
-//		gotJSON, _ := json.Marshal(receivedLending)
-//		log.Printf("getLending(): %s", err)
-//		log.Printf("getLending(): %s", gotJSON)
-//
-//		c.String(http.StatusInternalServerError, err.Error())
-//		return
-//	}
 //
 //	c.IndentedJSON(http.StatusOK, lending)
 //}

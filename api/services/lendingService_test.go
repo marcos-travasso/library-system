@@ -60,3 +60,20 @@ func Test_InsertLending_UserHasLending(t *testing.T) {
 	err = Mock.ExpectationsWereMet()
 	require.NoError(t, err)
 }
+
+func Test_ReturnLending_ValidReturn(t *testing.T) {
+	InitializeTestServices()
+	defer db.Close()
+
+	d := fixtures.GenerateValidLending()
+	l := &d.Lending
+	Mock.ExpectExec("UPDATE emprestimos SET").WithArgs(l.ID).
+		WillReturnResult(sqlmock.NewResult(l.ID, 0))
+
+	err := ReturnLending(l)
+
+	require.NoError(t, err)
+
+	err = Mock.ExpectationsWereMet()
+	require.NoError(t, err)
+}

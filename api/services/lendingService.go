@@ -25,3 +25,9 @@ func InsertLending(l *models.Lending) (err error) {
 
 	return
 }
+
+func ReturnLending(l *models.Lending) (err error) {
+	err = repositories.ReturnLending(db, l)
+
+	return
+}

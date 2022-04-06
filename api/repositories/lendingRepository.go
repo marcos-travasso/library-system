@@ -41,7 +41,8 @@ func IsLending(db *sql.DB, l *models.Lending) (err error) {
 	return nil
 }
 
-func ReturnBook(db *sql.DB, l *models.Lending) error {
-	//TODO
-	return nil
+func ReturnLending(db *sql.DB, l *models.Lending) (err error) {
+	_, err = db.Exec("UPDATE emprestimos SET devolvido = 1 WHERE idEmprestimo = ?", l.ID)
+
+	return
 }

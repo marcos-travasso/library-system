@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"testing"
 )
 
@@ -39,6 +40,28 @@ func Test_PostLending_ShouldReturnOk(t *testing.T) {
 	require.Equal(t, http.StatusOK, w.Code)
 	require.Equal(t, d.LendingId, receivedLending.ID)
 	require.Equal(t, d.DevolutionId, receivedLending.Devolution.ID)
+
+	err := services.Mock.ExpectationsWereMet()
+	require.NoError(t, err)
+}
+
+func Test_ReturnLending_ShouldReturnOk(t *testing.T) {
+	//GIVEN
+	InitializeControllers()
+	services.InitializeTestServices()
+
+	d := fixtures.GenerateValidLending()
+	services.Mock.ExpectExec("UPDATE emprestimos SET").WithArgs(d.LendingId).
+		WillReturnResult(sqlmock.NewResult(d.LendingId, 0))
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodPatch, "/lendings/"+strconv.Itoa(int(d.LendingId)), nil)
+
+	//WHEN
+	router.ServeHTTP(w, req)
+
+	//THEN
+	require.Equal(t, http.StatusOK, w.Code)
 
 	err := services.Mock.ExpectationsWereMet()
 	require.NoError(t, err)

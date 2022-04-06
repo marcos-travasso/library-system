@@ -6,11 +6,12 @@ import (
 	"github.com/marcos-travasso/library-system/services"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func initializeLendingController() {
 	router.POST("/lendings", postLending)
-	//router.PATCH("/lendings/:id", returnLending)
+	router.PATCH("/lendings/:id", returnLending)
 }
 
 func postLending(c *gin.Context) {
@@ -31,40 +32,20 @@ func postLending(c *gin.Context) {
 	c.String(http.StatusBadRequest, "failed to parse JSON")
 }
 
-//
-//func getLendings(c *gin.Context) {
-//	lendings, err := dbDir.SelectLendings()
-//	if err != nil {
-//		log.Printf("getLendings(): %s", err)
-//
-//		c.String(http.StatusInternalServerError, err.Error())
-//		return
-//	}
-//	c.IndentedJSON(http.StatusOK, lendings)
-//}
-//
-//
-//	c.IndentedJSON(http.StatusOK, lending)
-//}
-//
-//func returnLending(c *gin.Context) {
-//	id, err := strconv.Atoi(c.Param("id"))
-//	if err != nil {
-//		log.Printf("returnLending(): %s", err)
-//		c.String(http.StatusBadRequest, err.Error())
-//		return
-//	}
-//	receivedLending := models.Lending{ID: id}
-//
-//	err = dbDir.ReturnBook(receivedLending)
-//	if err != nil {
-//		gotJSON, _ := json.Marshal(receivedLending)
-//		log.Printf("returnLending(): %s", err)
-//		log.Printf("returnLending(): %s", gotJSON)
-//
-//		c.String(http.StatusInternalServerError, err.Error())
-//		return
-//	}
-//
-//	c.IndentedJSON(http.StatusOK, "Success")
-//}
+func returnLending(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
+	}
+	receivedLending := models.Lending{ID: int64(id)}
+
+	err = services.ReturnLending(&receivedLending)
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, "Success")
+	return
+}

@@ -2,6 +2,7 @@ package services
 
 import (
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/marcos-travasso/library-system/fixtures"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -10,7 +11,7 @@ func Test_InsertLending_ValidLending(t *testing.T) {
 	InitializeTestServices()
 	defer db.Close()
 
-	d := GenerateValidLending()
+	d := fixtures.GenerateValidLending()
 	l := &d.Lending
 
 	Mock.ExpectExec("INSERT INTO emprestimos").WithArgs(l.Book.ID, l.User.ID, l.LendDay).

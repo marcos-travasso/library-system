@@ -3,7 +3,7 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/marcos-travasso/library-system/fixtures"
 	"github.com/marcos-travasso/library-system/models"
 	"github.com/marcos-travasso/library-system/services"
 	"github.com/stretchr/testify/require"
@@ -18,28 +18,10 @@ func Test_PostBook_ShouldReturnOk(t *testing.T) {
 	InitializeControllers()
 	services.InitializeTestServices()
 
-	d := services.GenerateValidBook()
+	d := fixtures.GenerateValidBook()
+	d.MockInsertValues(services.Mock)
+
 	bookBody, _ := json.Marshal(d.Book)
-
-	//Author queries
-	services.Mock.ExpectQuery("SELECT").
-		WillReturnRows(sqlmock.NewRows([]string{}))
-	services.Mock.ExpectExec("INSERT INTO Pessoas").
-		WillReturnResult(sqlmock.NewResult(d.Book.Author.Person.ID, 1))
-	services.Mock.ExpectExec("INSERT INTO Autores").
-		WillReturnResult(sqlmock.NewResult(d.AuthorId, 1))
-
-	//Genre queries
-	services.Mock.ExpectQuery("SELECT").
-		WillReturnRows(sqlmock.NewRows([]string{}))
-	services.Mock.ExpectExec("INSERT INTO Generos").
-		WillReturnResult(sqlmock.NewResult(d.GenreId, 1))
-
-	//Book queries
-	services.Mock.ExpectExec("INSERT INTO Livros").
-		WillReturnResult(sqlmock.NewResult(d.BookId, 1))
-	services.Mock.ExpectExec("INSERT INTO generos_dos_livros").
-		WillReturnResult(sqlmock.NewResult(d.BookId, 1))
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(http.MethodPost, "/books", bytes.NewReader(bookBody))
@@ -65,18 +47,8 @@ func Test_GetBook_ShouldReturnOk(t *testing.T) {
 	InitializeControllers()
 	services.InitializeTestServices()
 
-	d := services.GenerateValidBook()
-
-	services.Mock.ExpectQuery("SELECT \\* FROM Livros").
-		WillReturnRows(d.BookRow)
-	services.Mock.ExpectQuery("SELECT \\* FROM generos_dos_livros").
-		WillReturnRows(d.LinkGenreRow)
-	services.Mock.ExpectQuery("SELECT \\* FROM Generos").
-		WillReturnRows(d.GenreRow)
-	services.Mock.ExpectQuery("SELECT \\* FROM Autores").
-		WillReturnRows(d.AuthorRow)
-	services.Mock.ExpectQuery("SELECT \\* FROM Pessoas").
-		WillReturnRows(d.PersonRow)
+	d := fixtures.GenerateValidBook()
+	d.MockSelectValues(services.Mock)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(http.MethodGet, "/books/"+strconv.Itoa(int(d.BookId)), nil)

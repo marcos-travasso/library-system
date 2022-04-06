@@ -3,7 +3,7 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/marcos-travasso/library-system/fixtures"
 	"github.com/marcos-travasso/library-system/models"
 	"github.com/marcos-travasso/library-system/services"
 	"github.com/stretchr/testify/require"
@@ -18,15 +18,10 @@ func Test_PostUser_ShouldReturnOk(t *testing.T) {
 	InitializeControllers()
 	services.InitializeTestServices()
 
-	d := services.GenerateValidUser()
-	userBody, _ := json.Marshal(d.User)
+	d := fixtures.GenerateValidUser()
+	d.MockInsertValues(services.Mock)
 
-	services.Mock.ExpectExec("INSERT INTO Pessoas").
-		WillReturnResult(sqlmock.NewResult(d.PersonId, 1))
-	services.Mock.ExpectExec("INSERT INTO Enderecos").
-		WillReturnResult(sqlmock.NewResult(d.AddressId, 1))
-	services.Mock.ExpectExec("INSERT INTO Usuarios").
-		WillReturnResult(sqlmock.NewResult(d.UserId, 1))
+	userBody, _ := json.Marshal(d.User)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(http.MethodPost, "/users", bytes.NewReader(userBody))
@@ -52,14 +47,8 @@ func Test_GetUser_ShouldReturnOk(t *testing.T) {
 	InitializeControllers()
 	services.InitializeTestServices()
 
-	d := services.GenerateValidUser()
-
-	services.Mock.ExpectQuery("SELECT \\* FROM Usuarios").
-		WillReturnRows(d.UserRow)
-	services.Mock.ExpectQuery("SELECT \\* FROM Enderecos").
-		WillReturnRows(d.AddressRow)
-	services.Mock.ExpectQuery("SELECT \\* FROM Pessoas").
-		WillReturnRows(d.PersonRow)
+	d := fixtures.GenerateValidUser()
+	d.MockSelectValues(services.Mock)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(http.MethodGet, "/users/"+strconv.Itoa(int(d.UserId)), nil)

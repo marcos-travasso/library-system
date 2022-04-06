@@ -3,7 +3,7 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/marcos-travasso/library-system/fixtures"
 	"github.com/marcos-travasso/library-system/models"
 	"github.com/marcos-travasso/library-system/services"
 	"github.com/stretchr/testify/require"
@@ -17,13 +17,10 @@ func Test_PostLending_ShouldReturnOk(t *testing.T) {
 	InitializeControllers()
 	services.InitializeTestServices()
 
-	d := services.GenerateValidLending()
-	lendingBody, _ := json.Marshal(d.Lending)
+	d := fixtures.GenerateValidLending()
+	d.MockInsertValues(services.Mock)
 
-	services.Mock.ExpectExec("INSERT INTO emprestimos").
-		WillReturnResult(sqlmock.NewResult(d.LendingId, 1))
-	services.Mock.ExpectExec("INSERT INTO devolucoes").
-		WillReturnResult(sqlmock.NewResult(d.DevolutionId, 1))
+	lendingBody, _ := json.Marshal(d.Lending)
 
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest(http.MethodPost, "/lendings", bytes.NewReader(lendingBody))

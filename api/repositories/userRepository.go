@@ -37,30 +37,26 @@ func SelectUser(db *sql.DB, user *models.User) (err error) {
 	return
 }
 
-func SelectUsers(db *sql.DB) ([]models.User, error) {
-	users := make([]models.User, 0)
-
-	//TODO da pra melhorar isso seguindo o padrao do service
-	rows, err := db.Query("SELECT idUsuario, celular, telefone, cpf, email, criacao, idPessoa, nome, genero, nascimento, idEndereco, cep, cidade, bairro, rua, numero, complemento FROM ((Usuarios INNER JOIN Pessoas ON Pessoas.idPessoa = Usuarios.pessoa) INNER JOIN Enderecos ON Usuarios.endereco = Enderecos.idEndereco)")
+func SelectUsers(db *sql.DB) (users []models.User, err error) {
+	rows, err := db.Query("SELECT idUsuario FROM Usuarios")
 	if err != nil {
 		log.Println("select users error: " + err.Error())
-		return nil, err
+		return
 	}
 
 	for rows.Next() {
-		var newUser models.User
+		var user models.User
 
-		err = rows.Scan(&newUser.ID, &newUser.CellNumber, &newUser.PhoneNumber, &newUser.CPF, &newUser.Email, &newUser.CreationDate, &newUser.Person.ID, &newUser.Person.Name, &newUser.Person.Gender, &newUser.Person.Birthday, &newUser.Address.ID, &newUser.Address.CEP, &newUser.Address.City, &newUser.Address.Neighborhood, &newUser.Address.Street, &newUser.Address.Number, &newUser.Address.Complement)
+		err = rows.Scan(&user.ID)
 		if err != nil {
 			log.Println("scan user error: " + err.Error())
-			return nil, err
+			return
 		}
-		newUser.CreationDate = newUser.CreationDate[:10]
 
-		users = append(users, newUser)
+		users = append(users, user)
 	}
 
-	return users, nil
+	return
 }
 
 func DeleteUser(db *sql.DB, u *models.User) (err error) {

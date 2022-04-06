@@ -57,6 +57,14 @@ func SelectUsers() (users []models.User, err error) {
 		return
 	}
 
+	for i := range users {
+		err = SelectUser(&users[i])
+		if err != nil {
+			log.Println("select user error: " + err.Error())
+			return
+		}
+	}
+
 	return
 }
 

@@ -12,7 +12,7 @@ import (
 func initializeUserController() {
 	router.POST("/users", postUser)
 	router.GET("/users/:id", getUser)
-	//router.GET("/users", getUsers)
+	router.GET("/users", getUsers)
 	//router.DELETE("/users/:id", deleteUser)
 }
 
@@ -53,18 +53,15 @@ func getUser(c *gin.Context) {
 	return
 }
 
-//
-//func getUsers(c *gin.Context) {
-//	users, err := dbDir.SelectUsers()
-//	if err != nil {
-//		log.Printf("getUsers(): %s", err)
-//
-//		c.String(http.StatusInternalServerError, err.Error())
-//		return
-//	}
-//	c.IndentedJSON(http.StatusOK, users)
-//}
-//
+func getUsers(c *gin.Context) {
+	users, err := services.SelectUsers()
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.IndentedJSON(http.StatusOK, users)
+}
+
 //func deleteUser(c *gin.Context) {
 //	id, err := strconv.Atoi(c.Param("id"))
 //	if err != nil {

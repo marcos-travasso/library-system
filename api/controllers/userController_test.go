@@ -3,6 +3,7 @@ package controllers
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/marcos-travasso/library-system/fixtures"
 	"github.com/marcos-travasso/library-system/models"
 	"github.com/marcos-travasso/library-system/services"
@@ -64,6 +65,39 @@ func Test_GetUser_ShouldReturnOk(t *testing.T) {
 	require.Equal(t, d.UserId, receivedUser.ID)
 	require.Equal(t, d.AddressId, receivedUser.Address.ID)
 	require.Equal(t, d.PersonId, receivedUser.Person.ID)
+
+	err := services.Mock.ExpectationsWereMet()
+	require.NoError(t, err)
+}
+
+func Test_GetUsers_ShouldReturnOk(t *testing.T) {
+	//GIVEN
+	InitializeControllers()
+	services.InitializeTestServices()
+
+	d1 := fixtures.GenerateValidUser()
+	d2 := fixtures.GenerateValidUser()
+
+	services.Mock.ExpectQuery("SELECT idUsuario FROM Usuarios").
+		WillReturnRows(sqlmock.NewRows([]string{""}).
+			AddRow(d1.UserId).
+			AddRow(d2.UserId))
+
+	d1.MockSelectValues(services.Mock)
+	d2.MockSelectValues(services.Mock)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodGet, "/users", nil)
+
+	//WHEN
+	router.ServeHTTP(w, req)
+
+	//THEN
+	var receivedUsers []models.User
+	_ = json.Unmarshal(w.Body.Bytes(), &receivedUsers)
+
+	require.Equal(t, http.StatusOK, w.Code)
+	require.Equal(t, 2, len(receivedUsers))
 
 	err := services.Mock.ExpectationsWereMet()
 	require.NoError(t, err)

@@ -55,3 +55,21 @@ func SelectBook(b *models.Book) (err error) {
 
 	return
 }
+
+func SelectBooks() (books []models.Book, err error) {
+	books, err = repositories.SelectBooks(db)
+	if err != nil {
+		log.Println("select books error: " + err.Error())
+		return
+	}
+
+	for i := range books {
+		err = SelectBook(&books[i])
+		if err != nil {
+			log.Println("select book error: " + err.Error())
+			return
+		}
+	}
+
+	return
+}

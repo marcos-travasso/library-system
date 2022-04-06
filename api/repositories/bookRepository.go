@@ -46,29 +46,26 @@ func SelectBook(db *sql.DB, b *models.Book) (err error) {
 	return
 }
 
-func SelectBooks(db *sql.DB) ([]models.Book, error) {
-	books := make([]models.Book, 0)
-
-	rows, err := db.Query("SELECT idLivro, titulo, ano, paginas, autor, idPessoa, nome, genero, nascimento FROM (Livros INNER JOIN Autores A on Livros.autor = A.idAutor) INNER JOIN Pessoas on pessoa = Pessoas.idPessoa")
+func SelectBooks(db *sql.DB) (books []models.Book, err error) {
+	rows, err := db.Query("SELECT idLivro FROM Livros")
 	if err != nil {
 		log.Println("select books error: " + err.Error())
-		return books, err
+		return
 	}
 
 	for rows.Next() {
-		var newBook models.Book
+		var book models.Book
 
-		err = rows.Scan(&newBook.ID, &newBook.Title, &newBook.Year, &newBook.Pages, &newBook.Author.ID, &newBook.Author.Person.ID, &newBook.Author.Person.Name, &newBook.Author.Person.Gender, &newBook.Author.Person.Birthday)
+		err = rows.Scan(&book.ID)
 		if err != nil {
 			log.Println("scan book error: " + err.Error())
-			return nil, err
+			return
 		}
 
-		books = append(books, newBook)
+		books = append(books, book)
 	}
 
-	//TODO select genres
-	return books, nil
+	return
 }
 
 func DeleteBook(db *sql.DB, b *models.Book) error {

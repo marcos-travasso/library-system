@@ -12,7 +12,7 @@ import (
 func initializeBookController() {
 	router.POST("/books", postBook)
 	router.GET("/books/:id", getBook)
-	//router.GET("/books", getBooks)
+	router.GET("/books", getBooks)
 	//router.DELETE("/books/:id", deleteBook)
 }
 
@@ -51,18 +51,15 @@ func getBook(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, receivedBook)
 }
 
-//
-//func getBooks(c *gin.Context) {
-//	books, err := dbDir.SelectBooks()
-//	if err != nil {
-//		log.Printf("getBooks(): %s", err)
-//
-//		c.String(http.StatusInternalServerError, err.Error())
-//		return
-//	}
-//	c.IndentedJSON(http.StatusOK, books)
-//}
-//
+func getBooks(c *gin.Context) {
+	books, err := services.SelectBooks()
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.IndentedJSON(http.StatusOK, books)
+}
+
 //func deleteBook(c *gin.Context) {
 //	id, err := strconv.Atoi(c.Param("id"))
 //	if err != nil {

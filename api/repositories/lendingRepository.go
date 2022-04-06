@@ -32,12 +32,10 @@ func IsLending(db *sql.DB, l *models.Lending) (err error) {
 		return
 	}
 
-	if !errors.Is(err, sql.ErrNoRows) {
-		if bookId == l.Book.ID {
-			return models.ErrorAlreadyLending("book")
-		} else {
-			return models.ErrorAlreadyLending("user")
-		}
+	if bookId == l.Book.ID {
+		return models.ErrorAlreadyLending("book")
+	} else if userId == l.User.ID {
+		return models.ErrorAlreadyLending("user")
 	}
 
 	return nil
